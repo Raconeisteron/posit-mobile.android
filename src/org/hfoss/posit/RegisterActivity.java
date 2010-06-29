@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -12,7 +13,7 @@ import android.widget.Button;
 public class RegisterActivity extends Activity implements OnClickListener{
 
 	private SharedPreferences sp;
-	
+	public final static int BACK_BUTTON = 12;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -34,6 +35,18 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		if(!sp.getString("AUTHKEY", "").equals(""))
 			finish();
 	}
+	
+	public boolean onKeyDown (int keyCode, KeyEvent event){
+		switch(keyCode){
+			
+		case KeyEvent.KEYCODE_BACK:	
+			setResult(BACK_BUTTON, new Intent());
+			finish();
+			break;
+		}
+		return true;	
+	}
+	
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent();
