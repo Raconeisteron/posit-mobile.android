@@ -354,6 +354,11 @@ public class ListFindsActivity extends ListActivity implements ViewBinder{
 			int count = mDbHelper.getImagesCount(findIden);
 			tv.setText(count+" photos  ");
 			return true;
+		case R.id.idNumberText:
+			tv = (TextView) view;
+			String iD = cursor.getString(cursor.getColumnIndexOrThrow(PositDbHelper.FINDS_GUID));
+			tv.setText(iD.substring(0,8) + " ...");
+			return true;
 		default:
 			return false;
 		}

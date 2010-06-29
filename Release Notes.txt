@@ -1,3 +1,12 @@
+=== Version 0.7 beta ===
+
+New Features
+ * In the Android market.
+ * Users can login and create accounts from the phone
+ * Users have their individual projects
+ * Per-project synchronization
+ * RWG will be modularized and enabled in a future release, along with the coverage tracker
+
 
 === Version 0.6 Alpha ===
 
