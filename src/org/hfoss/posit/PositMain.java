@@ -59,6 +59,7 @@ public class PositMain extends Activity implements OnClickListener,
 	public static final int LOGIN_CANCELED = 3;
 	public static final int LOGIN_SUCCESSFUL = 4;
 	private static final int REGISTRATION_CANCELLED = 5;
+	private static final int REGISTRATION_ACTIVITY = 11;
 	private SharedPreferences sp;
 	// public static AdhocClient mAdhocClient;
 	public static WifiManager wifiManager;
@@ -91,7 +92,7 @@ public class PositMain extends Activity implements OnClickListener,
 		}else{
 		if(!checkPhoneRegistrationAndInitialSync()){
 			Intent i = new Intent(this, RegisterActivity.class);
-			startActivity(i);
+			startActivityForResult(i, REGISTRATION_ACTIVITY);
 		}
 		else{	
 		setContentView(R.layout.main);
@@ -143,7 +144,7 @@ public class PositMain extends Activity implements OnClickListener,
 		super.onResume();
 		if(!checkPhoneRegistrationAndInitialSync()){
 			Intent i = new Intent(this, RegisterActivity.class);
-			startActivity(i);
+			startActivityForResult(i, REGISTRATION_ACTIVITY);
 		}
 		else{	
 		setContentView(R.layout.main);
@@ -164,7 +165,7 @@ public class PositMain extends Activity implements OnClickListener,
 		super.onRestart();
 		if(!checkPhoneRegistrationAndInitialSync()){
 			Intent i = new Intent(this, RegisterActivity.class);
-			startActivity(i);
+			startActivityForResult(i, REGISTRATION_ACTIVITY);
 		}
 		else{	
 		setContentView(R.layout.main);
@@ -185,7 +186,7 @@ public class PositMain extends Activity implements OnClickListener,
 		super.onRestoreInstanceState(savedInstanceState);
 		if(!checkPhoneRegistrationAndInitialSync()){
 			Intent i = new Intent(this, RegisterActivity.class);
-			startActivity(i);
+			startActivityForResult(i, REGISTRATION_ACTIVITY);
 		}
 		else{	
 		setContentView(R.layout.main);
@@ -219,6 +220,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	case REGISTRATION_CANCELLED:
 		finish();
 		break;
+	case REGISTRATION_ACTIVITY:
+		if(resultCode == RegisterActivity.BACK_BUTTON)
+			finish();
 	default:
 		super.onActivityResult(requestCode, resultCode, data);
 	}

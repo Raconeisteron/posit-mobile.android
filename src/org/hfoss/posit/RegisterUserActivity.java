@@ -66,7 +66,7 @@ public class RegisterUserActivity extends Activity implements OnClickListener {
 	private ProgressDialog mProgressDialog;
 	private String server="http://posit-project.org/sandbox"; /* this is to avoid a null pointer error essentially*/
 	private static final int CREATE_ACCOUNT = 1;
-	public final static int BACK_BUTTON = 5;
+	public final static int BACK_BUTTON = 12;
 	private static final String TAG = "RegisterUserActivity";
 
 	/**
