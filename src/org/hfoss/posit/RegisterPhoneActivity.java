@@ -171,6 +171,10 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_CANCELED)
 			return;
+		if(resultCode == RegisterUserActivity.BACK_BUTTON){
+			finish();
+			return;
+		}
 		switch (requestCode) {
 		case BARCODE_READER:
 			String value = data.getStringExtra("SCAN_RESULT");
@@ -291,7 +295,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				break;
 			}
 			if (emV.isValid(email) != true) {
-				Utils.showToast(this, "Please enter a valid email address");
+				Utils.showToast(this, "Please enter a valid ddress");
 				break;
 			}
 			

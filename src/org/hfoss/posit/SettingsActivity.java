@@ -98,8 +98,10 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			startActivity(i);
 		}
 		if(preference.getTitle().toString().equals("Create an account")){
-			Intent i = new Intent(this, RegisterUserActivity.class);
-			startActivity(i);
+			Intent intent = new Intent(this, RegisterPhoneActivity.class);
+			intent.setClass(this, RegisterPhoneActivity.class);
+			intent.putExtra("regUser", true);
+			startActivity(intent);
 		}
 		if(preference.getTitle().toString().equals("Current server")){
 			if (preference instanceof EditTextPreference) {
