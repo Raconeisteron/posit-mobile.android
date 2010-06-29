@@ -215,6 +215,8 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		barcodeDownload.setVisibility(Button.GONE);
 		barcodeRestart.setVisibility(TextView.GONE);
 		
+
+		
 //		 removed this inquiry to ensure user has bar code 
 //		 scanner since program currently doesn't use the scanner
 //		if(!isIntentAvailable(this,"com.google.zxing.client.android.SCAN")) {
@@ -286,12 +288,15 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		tView.addTextChangedListener(textChangedWatcher);
 		
 		// instead of reading a bar code, ID's are now randomly assigned by a UUID
-		TextView idView = (TextView) findViewById(R.id.idText);
+		EditText idView = (EditText) findViewById(R.id.idText);
 		idView.setText(UUID.randomUUID().toString());
 		idView.addTextChangedListener(textChangedWatcher);
 		
 		//		 set to gone for now because we don't want to display the ID
-		idView.setVisibility(TextView.GONE);
+		idView.setVisibility(EditText.GONE);
+		TextView idText = (TextView) findViewById(R.id.idNumberText);
+		idText.setText(idView.getText().toString().substring(0,8)+" ...");
+		idText.setVisibility(TextView.VISIBLE);
 		TextView nameView = (TextView) findViewById(R.id.nameText);
 		nameView.setText("");
 		nameView.addTextChangedListener(textChangedWatcher);
@@ -359,7 +364,11 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 			mFind.setGuid(values.getAsString(PositDbHelper.FINDS_GUID));
 			displayContentInView(values);  
 		}
+		EditText idView = (EditText) findViewById(R.id.idText);
 		
+		TextView idText = (TextView) findViewById(R.id.idNumberText);
+		idText.setText(idView.getText().toString().substring(0,8)+" ...");
+		idText.setVisibility(TextView.VISIBLE);
 		
 		displayGallery(mFindId);
 		
