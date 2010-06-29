@@ -110,7 +110,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 	//	 in an attempt to deal with the length of the new UUIDs
 	public static final String[] list_row_data = { 
 		FINDS_ID,
-//		FINDS_GUID,  
+		FINDS_GUID,  
 		FINDS_NAME,
 		FINDS_DESCRIPTION,
 		FINDS_LATITUDE,
@@ -122,7 +122,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 
 	public static final int[] list_row_views = {
 		R.id.row_id,		    
-//		R.id.barcode_id,
+		R.id.idNumberText,
 		R.id.name_id, 
 		R.id.description_id,
 		R.id.latitude_id,

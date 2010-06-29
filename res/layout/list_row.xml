@@ -48,11 +48,10 @@
 			android:layout_height="wrap_content" android:layout_alignTop="@id/longitude_id"
 			android:layout_alignParentRight="true" android:layout_marginRight="5dp"
 			android:textSize="13dp" android:visibility="gone" />
-
-		<TextView android:id="@+id/barcode_id" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_alignTop="@id/longitude_id"
-			android:layout_toLeftOf="@id/row_id" android:layout_marginRight="10dp"
-			android:layout_below="@id/num_photos" android:textSize="13dp"
-			android:visibility="gone" />
+			
+		<TextView android:id="@+id/idNumberText" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginRight="10dp" 
+			android:layout_below="@id/status" android:textSize="13dp"
+			android:layout_alignParentRight="true" android:layout_alignTop="@id/longitude_id"/>
 	</RelativeLayout>
 </LinearLayout>
