@@ -86,21 +86,20 @@
 					android:id="@+id/idLabel" 
 					android:layout_width="20sp" 
 					android:layout_height="wrap_content" 
-					android:text="@string/idLabel" 
-					android:visibility="gone"/>
+					android:text="@string/idLabel" />
 				<Button 
 					android:id="@+id/idBarcodeButton" 
 					android:layout_width="120dp" 
 					android:layout_height="wrap_content" 
 					android:text="@string/barcodeText" 
-					android:layout_toRightOf="@id/idLabel"/>
+					android:layout_toRightOf="@id/idLabel"
+					android:visibility="gone"/>
 					
 				<TextView 
 					android:id="@+id/idNumberText" 
 					android:layout_width="fill_parent" 
 					android:layout_height="wrap_content" 
-					android:text="@string/idLabel"
-					android:visibility="gone" />
+					android:layout_toRightOf="@id/idLabel" />
 					
 				<EditText 
 					android:id="@+id/idText" 
@@ -116,7 +115,7 @@
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
 					android:hint="@string/ghostData_name"
-					android:layout_below="@+id/idText"
+					android:layout_below="@+id/idNumberText"
 					android:inputType ="textCapSentences" />
 			
 				<EditText 

@@ -4,9 +4,9 @@
 	<string name="confirmChange">Confirm</string>
 	<string name="accountNotFoundMessage">Your email or username is incorrect</string>
 	<string name="projectNameLabel">Project Name:</string>
-	<string name="prefDevice">Add a phone</string>
+	<string name="prefDevice">Login</string>
 	<string name="prefUser">Create an account</string>
-	<string name="registerDeviceTitle">Add this phone to your account on the server</string>
+	<string name="registerDeviceTitle">Login and add this phone to your account on the server</string>
 	<string name="registerUserTitle">Create an account on the server and login</string>
 	<string name="projectDescriptionLabel">Project Description:</string>
 	<string name="createProjectButton">Create Project</string>
@@ -232,6 +232,6 @@
 	<string name="new_expedition_menu_item">New expedition</string>
 	<string name="nativeActivity">Native Activity</string>
 	<string name="idAddProjButton">+ Add New Project</string>
-<string name="login">Add Phone</string>
+<string name="login">Login</string>
 <string name="idTutorial">Tutorial</string>
 </resources>
