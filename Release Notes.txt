@@ -6,7 +6,7 @@ New Features
  * Users have their individual projects
  * Per-project synchronization
  * RWG will be modularized and enabled in a future release, along with the coverage tracker
-
+ * Due to problems with uploading project with name org.hfoss.posit to the market, changed the package name to org.hfoss.posit.android
 
 === Version 0.6 Alpha ===
 
