@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.hfoss.posit"
+	package="org.hfoss.posit.android"
 	android:versionCode="1" android:versionName="0.7.0">
 	<uses-sdk android:minSdkVersion="3"/>
 	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
@@ -50,9 +50,9 @@
 		<activity android:name=".BackgroundTrackerActivity" android:configChanges="orientation|keyboardHidden"/>
 		<activity android:name=".NativeActivity"/>
 		<activity android:name=".TutorialActivity"/>
-		<activity android:name="org.hfoss.posit.sms.SahanaSMSActivity"/>
-		<service android:name="org.hfoss.posit.adhoc.RWGService" />
-		<provider android:name="org.hfoss.posit.provider.PositContentProvider" android:authorities="org.hfoss.provider.POSIT" />
+		<activity android:name="org.hfoss.posit.android.sms.SahanaSMSActivity"/>
+		<service android:name="org.hfoss.posit.android.adhoc.RWGService" />
+		<provider android:name="org.hfoss.posit.android.provider.PositContentProvider" android:authorities="org.hfoss.provider.POSIT" />
 	</application>
 </manifest>
 	
