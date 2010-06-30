@@ -291,7 +291,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				break;
 			}
 			if (emV.isValid(email) != true) {
-				Utils.showToast(this, "Please enter a valid ddress");
+				Utils.showToast(this, "Please enter a valid address");
 				break;
 			}
 			
