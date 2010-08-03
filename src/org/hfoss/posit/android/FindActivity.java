@@ -41,11 +41,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -58,6 +60,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -106,6 +109,9 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 
 	private double mLongitude = 0;
 	private double mLatitude = 0;
+	
+	private SharedPreferences sp;
+
 
 	private TextView mLatitudeTextView;
 	private TextView mLongitudeTextView;
@@ -138,6 +144,9 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	private static final int CONFIRM_EXIT=3;
 	private static final boolean ENABLED_ONLY = true;
 	private static final int THUMBNAIL_TARGET_SIZE = 320;
+	
+	private Context mContext;
+	
 	/* Listener for checking if the text has changed in any fields */
 	private TextWatcher textChangedWatcher= new TextWatcher(){
 		public void afterTextChanged(Editable s){
@@ -184,9 +193,12 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mContext = this;
 		//finishActivity(ListFindsActivity.FIND_FROM_LIST);
-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		sp = PreferenceManager.getDefaultSharedPreferences(this);
 		PROJECT_ID = sp.getInt("PROJECT_ID", 0);
+		
 //		IS_ADHOC = sp.getBoolean("IS_ADHOC", false);
 		
 		isClean = true;
@@ -378,6 +390,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
 	}
 
 	
@@ -439,6 +452,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 					/* User clicked Cancel so do nothing */
 				}
 			})
+
 			.create();
 
 		case CONFIRM_EXIT:
@@ -936,6 +950,55 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		setCurrentGpsLocation(null);  	
 	}
 
+	private void gpsNotEnabled(){
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final AlertDialog.Builder secBuilder = new AlertDialog.Builder(this);
+		builder
+		.setMessage("GPS coordinates could not be retrieved. Would you like to enable additional GPS options?")
+	           .setCancelable(false)
+	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	        	   public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+	        		   enableGPS();
+	        	   }
+	           })
+	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {           		   
+	            	   secBuilder.setMessage("Do you want to disable this alert?")
+	    	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	    	        	   public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+	    	        		  disableAlert();
+	    	        	   }
+	    	           })
+	    	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	    	        	   public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+	    	        		   dialog.cancel();   		   
+	    	        	   }
+	    	           });
+	            	   final AlertDialog secAlert = secBuilder.create();
+	            	   secAlert.show();
+	            	   dialog.cancel();
+	               }
+	           });
+	    	
+	    final AlertDialog alert = builder.create();
+	    alert.show();		
+	}
+	
+	private void disableAlert(){
+		Editor edit = sp.edit();
+		edit.putBoolean("gpsAlertDisabled", true);
+		edit.commit();
+	}
+	
+	private void enableGPS(){
+        ComponentName toLaunch = new ComponentName("com.android.settings","com.android.settings.SecuritySettings");
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        i.setComponent(toLaunch);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(i, 0);
+	}
+	
 	/**
 	 * Sends a message to the update handler with either the current location or 
 	 *  the last known location. 
@@ -943,9 +1006,9 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	 */
 	private void setCurrentGpsLocation(Location location) {
 		String bestProvider = "";
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		List<String> providers = mLocationManager.getProviders(ENABLED_ONLY);
 		if (location == null) {
-			mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			List<String> providers = mLocationManager.getProviders(ENABLED_ONLY);
 			if(Utils.debug)
 				Log.i(TAG, "Enabled providers = " + providers.toString());
 			bestProvider = mLocationManager.getBestProvider(new Criteria(),ENABLED_ONLY);
@@ -964,9 +1027,14 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 			msg.what = UPDATE_LOCATION;
 			this.updateHandler.sendMessage(msg);
 		} catch (NullPointerException e) {
-				mLongitude = mLatitude = 0;   // In case no network and no GPS
-			  	Log.e(TAG, e.toString());
-				e.printStackTrace();
+			boolean alertDisabled = sp.getBoolean("gpsAlertDisabled", false);
+			if(!alertDisabled&&(!providers.contains(LocationManager.GPS_PROVIDER)||!providers.contains(LocationManager.NETWORK_PROVIDER))){
+				gpsNotEnabled();
+			}else{
+			mLongitude = mLatitude = 0;   // In case no network and no GPS
+			Log.e(TAG, e.toString());
+			e.printStackTrace();
+			}
 		}
 	}
 }

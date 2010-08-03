@@ -224,7 +224,7 @@ void *handleThread2(void** args){
 
 
 /******************************* MAIN ************************************/
-JNIEXPORT jstring JNICALL Java_org_hfoss_posit_NativeLib_startRWG
+JNIEXPORT jstring JNICALL Java_org_hfoss_posit_rwg_LibRWG_startRWG
   (JNIEnv * env, jobject obj)
 { 
   pthread_t thread1;
@@ -308,8 +308,8 @@ JNIEXPORT jstring JNICALL Java_org_hfoss_posit_NativeLib_startRWG
   }*/
 
   /*open streams, named pipes for communicating with other processess*/
-  inPipe = open("/data/rwg/input",O_RDWR|O_NONBLOCK);
-  outPipe = open("/data/rwg/output",O_RDWR|O_NONBLOCK);
+  inPipe = open("/data/data/org.hfoss.posit.android/input",O_RDWR|O_NONBLOCK);
+  outPipe = open("/data/data/org.hfoss.posit.android/output",O_RDWR|O_NONBLOCK);
 
   if(outPipe == -1 || inPipe == -1 ){
 	return (*env)->NewStringUTF(env, "Failed to open pipe");

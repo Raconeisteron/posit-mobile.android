@@ -26,6 +26,7 @@ import java.util.List;
 import org.hfoss.posit.android.utilities.MyItemizedOverlay;
 import org.hfoss.posit.android.utilities.Utils;
 import org.hfoss.posit.android.web.Communicator;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -436,6 +437,7 @@ public class BackgroundTrackerActivity extends MapActivity implements LocationLi
 		String ns = Context.NOTIFICATION_SERVICE;
 		mNotificationManager = (NotificationManager) getSystemService(ns);
 		mNotificationManager.notify(NOTIFY_TRACKER_ID, notification);  // 1 = ID for this notification
+		
 	}
 
 	/** 

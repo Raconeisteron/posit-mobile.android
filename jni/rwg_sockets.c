@@ -48,9 +48,10 @@ int rwg_create_socket(int protocol_to_sniff)
 
 	setuid(0);*/
 	__android_log_print(ANDROID_LOG_INFO, "create_socket","about to su");
-	if(execv("/system/xbin/su", NULL) < 0) {
-	__android_log_print(ANDROID_LOG_ERROR, "su:create_socket",strerror(errno));
-	}
+	//FIXME no root should be required
+//	if(execv("/system/xbin/su", NULL) < 0) {
+//	__android_log_print(ANDROID_LOG_ERROR, "su:create_socket",strerror(errno));
+//	}
 	__android_log_print(ANDROID_LOG_INFO, "create_socket","successful su");
 	/*if(capset(&header, &data)!=0) {
 	__android_log_print(ANDROID_LOG_INFO,"capset:create_socket",strerror(errno));
@@ -62,7 +63,7 @@ int rwg_create_socket(int protocol_to_sniff)
   
   __android_log_print(ANDROID_LOG_INFO, "create_socket","creating socket...");
 
-    if((rawsock = socket(PF_PACKET, SOCK_RAW, htons(protocol_to_sniff)))== -1)
+    if((rawsock = socket(AF_INET, SOCK_DGRAM, 0))== -1)
     {
 		__android_log_print(ANDROID_LOG_ERROR, "create_socket","%i",CAP_NET_RAW);
 		__android_log_print(ANDROID_LOG_ERROR, "create_socket",strerror(errno));

@@ -16,7 +16,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := posit
+LOCAL_MODULE    := rwg
+LOCAL_CFLAGS 	:= -g -Werror
 LOCAL_SRC_FILES := \
 	posit.c \
 	rwg.c \

@@ -23,6 +23,7 @@ package org.hfoss.posit.android;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -120,8 +121,17 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
 		 if (key.equals("SERVER_ADDRESS")){
 			server = sp.getString("SERVER_ADDRESS", "");
-			if (server != null) 
+			if (server != null) {
 				serverAddress.setSummary(server); 
+				}
+			Editor edit = sp.edit();
+			edit.putString("PROJECT_NAME", "");
+			edit.putString("AUTHKEY", "");
+			edit.putInt("PROJECT_ID", 0);
+			edit.commit();
+			Intent i = new Intent(this, RegisterPhoneActivity.class);
+			startActivity(i);
+			
 		 }
 		 else if (key.equals("PROJECT_NAME")){
 				String projectName = sp.getString("PROJECT_NAME", "");
