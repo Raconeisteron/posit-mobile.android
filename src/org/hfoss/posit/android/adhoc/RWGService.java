@@ -549,7 +549,7 @@ public class RWGService extends Service implements RWGConstants {
     	Log.i("ADHOC_CLIENT","It's running!");
 		try{
 			Log.i("ADHOCCLIENT", "DOING INPUT PIPE");
-			FileOutputStream fos = new FileOutputStream("/data/data/org.hfoss.posit/files/input");
+			FileOutputStream fos = new FileOutputStream(getApplicationInfo().dataDir+"/files/input");
 			Log.i("ADHOCCLIENT", "1");
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			Log.i("ADHOCCLIENT", "2");
@@ -563,7 +563,7 @@ public class RWGService extends Service implements RWGConstants {
 		}
     	 
     	try{
-    		 FileInputStream fis = new FileInputStream("/data/data/org.hfoss.posit/files/output");
+    		 FileInputStream fis = new FileInputStream(getApplicationInfo().dataDir+"/files/output");
     		 InputStreamReader isr = new InputStreamReader(fis,"ASCII");
     		 br = new BufferedReader(isr);
     		 Log.i("ADHOCCLIENT", "DID OUTPUT PIPE");
@@ -798,7 +798,7 @@ public class RWGService extends Service implements RWGConstants {
 	public static void send(String sendMessage) {
 		try{
 			Log.i(TAG, "sending message:" + sendMessage);
-			File f = new File("/data/data/org.hfoss.posit/files/results.txt");
+			File f = new File("/files/results.txt");
 			if(f.createNewFile()||f.exists()) {
 				FileWriter results = new FileWriter(f,true);
 		        results.append("Sent ("+Utils.getTimestamp()+"): "+sendMessage+"\n");

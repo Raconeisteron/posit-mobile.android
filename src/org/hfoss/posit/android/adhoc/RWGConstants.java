@@ -3,7 +3,7 @@ package org.hfoss.posit.android.adhoc;
 public interface RWGConstants {
 
 	//home directory of Android application
-	public final static String POSIT_HOME = "/data/data/org.hfoss.posit/";
+	public final static String POSIT_HOME = "/data/data/org.hfoss.posit.android/";
 
 	//name of the tor C binary
 	public final static String RWG_BINARY_ASSET_KEY = "rwgexec";	
@@ -26,7 +26,7 @@ public interface RWGConstants {
 	public final static String CHMOD_EXE_VALUE = "777";
 	
 	//path of the installed APK file
-	public final static String APK_PATH = "/data/app/org.hfoss.posit.apk";
+	public final static String APK_PATH = "/data/app/org.hfoss.posit.android.apk";
 	
 	
 	public final static int FILE_WRITE_BUFFER_SIZE = 2048;
