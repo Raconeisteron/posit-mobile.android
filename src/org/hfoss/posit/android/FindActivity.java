@@ -86,6 +86,7 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class FindActivity extends Activity 
 implements OnClickListener, OnItemClickListener, LocationListener {
+	private static final String NO_PROVIDER = "No location service";
 
 	private Find mFind;
 	private long mFindId;
@@ -183,6 +184,8 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 			super.handleMessage(msg);
 		}
 	};
+
+	private String mProvider;
 
 	/**
 	 * Sets up the various actions for the FindActivity, which are 
@@ -327,6 +330,8 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		List<String> providers = mLocationManager.getProviders(ENABLED_ONLY);
 		if(Utils.debug)
 			Log.i(TAG, "Enabled providers = " + providers.toString());
+//		String provider = LocationManager.GPS_PROVIDER;
+		
 		String provider = mLocationManager.getBestProvider(new Criteria(),ENABLED_ONLY);
 		if(Utils.debug)
 			Log.i(TAG, "Best provider = " + provider);
@@ -335,6 +340,32 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		mThread = new Thread(new MyThreadRunner());
 		stopThread = false;
 		mThread.start();
+	}
+	
+	private boolean setLocationProvider() {
+		Log.i(TAG, "setLocationProvider...()");
+	
+		// Check for Location service
+//		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
+		List<String> providers = mLocationManager.getProviders(ENABLED_ONLY);
+		mProvider = NO_PROVIDER;
+		if (providers.contains(LocationManager.GPS_PROVIDER)) {
+			mProvider = LocationManager.GPS_PROVIDER;
+		          
+        }
+		else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+			mProvider = LocationManager.NETWORK_PROVIDER;
+		}
+		if (mProvider.equals(NO_PROVIDER)) {
+//			Utils.showToast(this, "Aborting Tracker: " +  
+			Utils.showToast(this, "Aborting Add Find: " +  
+					NO_PROVIDER +  "\nYou must have GPS enabled. ");
+			return false;
+		}
+		Log.i(TAG, "setLocationProvider()= " + mProvider);
+		return true;
 	}
 
 	/**
@@ -403,6 +434,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		mLocationManager.removeUpdates(this);
 		stopThread = true;
 //		mDbHelper.close();
 	}
@@ -412,7 +444,6 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	 */
 	@Override
 	public void finish() {
-		// TODO Auto-generated method stub
 		super.finish();
 	}
 
@@ -1005,24 +1036,28 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	 * @param location is either null or the current location
 	 */
 	private void setCurrentGpsLocation(Location location) {
-		String bestProvider = "";
+//		String bestProvider = "";
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		List<String> providers = mLocationManager.getProviders(ENABLED_ONLY);
 		if (location == null) {
 			if(Utils.debug)
 				Log.i(TAG, "Enabled providers = " + providers.toString());
-			bestProvider = mLocationManager.getBestProvider(new Criteria(),ENABLED_ONLY);
-			if (bestProvider != null && bestProvider.length() != 0) {
-				mLocationManager.requestLocationUpdates(bestProvider, 30000, 0, this);	 // Every 30000 millisecs	
-				location = mLocationManager.getLastKnownLocation(bestProvider);				
+//			bestProvider = LocationManager.GPS_PROVIDER;
+//			bestProvider = mLocationManager.getBestProvider(new Criteria(),ENABLED_ONLY);
+			setLocationProvider();
+			if (mProvider != null && mProvider.length() != 0) {
+				mLocationManager.requestLocationUpdates(mProvider, 10000, 1, this);	 // Every 30000 millisecs	
+				location = mLocationManager.getLastKnownLocation(mProvider);				
 			}	
 		}
 		if(Utils.debug)
-			Log.i(TAG, "Best provider = |" + bestProvider + "|");
+			Log.i(TAG, "Best provider = |" + mProvider + "|");
 
 		try {
 			mLongitude = location.getLongitude();
 			mLatitude = location.getLatitude();
+			mLatitudeTextView.setText(mLatitude+"");
+			mLongitudeTextView.setText(mLongitude+"");
 			Message msg = Message.obtain();
 			msg.what = UPDATE_LOCATION;
 			this.updateHandler.sendMessage(msg);
