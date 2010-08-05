@@ -129,8 +129,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			edit.putString("AUTHKEY", "");
 			edit.putInt("PROJECT_ID", 0);
 			edit.commit();
-			Intent i = new Intent(this, RegisterPhoneActivity.class);
-			startActivity(i);
+			finish();
 			
 		 }
 		 else if (key.equals("PROJECT_NAME")){
