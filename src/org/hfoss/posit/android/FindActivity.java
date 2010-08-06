@@ -187,6 +187,8 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 
 	private String mProvider;
 
+	private boolean gettingLocationUpdates= false;
+
 	/**
 	 * Sets up the various actions for the FindActivity, which are 
 	 * inserting new finds in the DB, editing or deleting existing finds, 
@@ -434,7 +436,9 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		mLocationManager.removeUpdates(this);
+		if (gettingLocationUpdates){
+			mLocationManager.removeUpdates(this);
+		}
 		stopThread = true;
 //		mDbHelper.close();
 	}
@@ -1045,8 +1049,11 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 //			bestProvider = LocationManager.GPS_PROVIDER;
 //			bestProvider = mLocationManager.getBestProvider(new Criteria(),ENABLED_ONLY);
 			setLocationProvider();
-			if (mProvider != null && mProvider.length() != 0) {
-				mLocationManager.requestLocationUpdates(mProvider, 10000, 1, this);	 // Every 30000 millisecs	
+			
+			// request for location only if there's a provider
+			if (mProvider != null && mProvider.length() != 0 && mProvider != NO_PROVIDER) {
+				mLocationManager.requestLocationUpdates(mProvider, 10000, 1, this);	 // Every 30000 millisecs
+				gettingLocationUpdates = true;
 				location = mLocationManager.getLastKnownLocation(mProvider);				
 			}	
 		}

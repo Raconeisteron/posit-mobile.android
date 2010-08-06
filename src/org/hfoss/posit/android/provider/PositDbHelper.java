@@ -315,6 +315,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 			result += c.getString(0) + ":" + c.getString(1) + ",";
 			c.moveToNext();
 		}
+		c.close();
 		c = mDb.rawQuery("SELECT DISTINCT " + FINDS_HISTORY_TABLE+"."+FINDS_GUID + "," + FINDS_HISTORY_TABLE+"."+FINDS_ACTION 
 				+ " FROM " + FINDS_HISTORY_TABLE+","+FINDS_TABLE
 				+ " WHERE " + FINDS_TABLE+"."+FINDS_PROJECT_ID + " = "+projectId+ " AND " + FINDS_HISTORY_TABLE+"."+FINDS_ACTION + "!= 'delete' AND " + FINDS_HISTORY_TABLE+"."+FINDS_TIME + " > ? " , args);
