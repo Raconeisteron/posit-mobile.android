@@ -549,7 +549,7 @@ public class RWGService extends Service implements RWGConstants {
     	Log.i("ADHOC_CLIENT","It's running!");
 		try{
 			Log.i("ADHOCCLIENT", "DOING INPUT PIPE");
-			FileOutputStream fos = new FileOutputStream(getApplicationInfo().dataDir+"/files/input");
+			FileOutputStream fos = new FileOutputStream(mContext.getApplicationInfo().dataDir+"/files/input");
 			Log.i("ADHOCCLIENT", "1");
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			Log.i("ADHOCCLIENT", "2");
@@ -563,7 +563,7 @@ public class RWGService extends Service implements RWGConstants {
 		}
     	 
     	try{
-    		 FileInputStream fis = new FileInputStream(getApplicationInfo().dataDir+"/files/output");
+    		 FileInputStream fis = new FileInputStream(mContext.getApplicationInfo().dataDir+"/files/output");
     		 InputStreamReader isr = new InputStreamReader(fis,"ASCII");
     		 br = new BufferedReader(isr);
     		 Log.i("ADHOCCLIENT", "DID OUTPUT PIPE");
