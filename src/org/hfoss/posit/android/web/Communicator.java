@@ -50,6 +50,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.hfoss.posit.android.Constants;
 import org.hfoss.posit.android.Find;
+import org.hfoss.posit.android.Log;
 import org.hfoss.posit.android.R;
 import org.hfoss.posit.android.provider.PositDbHelper;
 import org.hfoss.posit.android.utilities.Utils;
@@ -65,7 +66,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 /**
  * The communication module for POSIT. Handles most calls to the server to get
