@@ -113,7 +113,11 @@ public class SyncActivity extends Activity {
 
 		Log.i(TAG, "Stopping listener");
 		ncl.stopListening();
-		ncl.unregisterHandler(mHandler);
+		try {
+			ncl.unregisterHandler(mHandler);
+		}catch (Exception e ){
+			Log.e(TAG, "Unregister Handler failed"+ e.getMessage());
+		}
 		Log.i(TAG, "Sync thread is " + mSyncThread.getState().toString());
 		mProgressDialog.dismiss();
 		super.finish();
