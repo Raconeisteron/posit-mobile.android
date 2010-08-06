@@ -77,167 +77,161 @@ public class PositMain extends Activity implements OnClickListener,
 		// version of that
 		// rwgService =new RWGService();
 
-		sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		
-		
+		sp = PreferenceManager.getDefaultSharedPreferences(this);
 
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		if (!sp.getBoolean("tutorialComplete", false)) {
 			Intent i = new Intent(this, TutorialActivity.class);
 			startActivity(i);
-		}else{
-		if(!checkPhoneRegistrationAndInitialSync()){
-			Intent i = new Intent(this, RegisterActivity.class);
-			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		}
-		else{	
-		setContentView(R.layout.main);
+		} else {
+			if (!checkPhoneRegistrationAndInitialSync()) {
+				Intent i = new Intent(this, RegisterActivity.class);
+				startActivityForResult(i, REGISTRATION_ACTIVITY);
+			} else {
+				setContentView(R.layout.main);
 
-		final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-		if (addFindButton != null)
-			addFindButton.setOnClickListener(this);
+				final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
+				if (addFindButton != null)
+					addFindButton.setOnClickListener(this);
 
-		final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-		if (listFindButton != null) {
-			// Log.i(TAG, listFindButton.getText() + "");
-			listFindButton.setOnClickListener(this);
-		}
-		}
-		sp = PreferenceManager.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = sp.edit();
-		
-		editor.putString("PROJECT_NAME", "");
-		Log.i(TAG, "onCreate(), Preferences= " + sp.getAll().toString());
+				final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
+				if (listFindButton != null) {
+					// Log.i(TAG, listFindButton.getText() + "");
+					listFindButton.setOnClickListener(this);
+				}
+			}
+			sp = PreferenceManager.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = sp.edit();
 
-		// NOTE: If the shared preferences get left in a state with the
-		// Tracker's not set to IDLE,
-		// it will be impossible to start the Tracker. To do so, use the
-		// statements here to reset
-		// Tracker State to IDLE.
-		// This is an area that could use a better algorithm based on Android's
-		// life cycle.
-		// editor.putInt(BackgroundTrackerActivity.SHARED_STATE,
-		// BackgroundTrackerActivity.IDLE);
-		// editor.commit();
+			editor.putString("PROJECT_NAME", "");
+			Log.i(TAG, "onCreate(), Preferences= " + sp.getAll().toString());
 
-		// If this is the first run on this device, let the user register the
-		// phone.
+			// NOTE: If the shared preferences get left in a state with the
+			// Tracker's not set to IDLE,
+			// it will be impossible to start the Tracker. To do so, use the
+			// statements here to reset
+			// Tracker State to IDLE.
+			// This is an area that could use a better algorithm based on
+			// Android's
+			// life cycle.
+			// editor.putInt(BackgroundTrackerActivity.SHARED_STATE,
+			// BackgroundTrackerActivity.IDLE);
+			// editor.commit();
 
-		Utils.showToast(this, "Current Project: "
-				+ sp.getString("PROJECT_NAME", ""));
+			// If this is the first run on this device, let the user register
+			// the
+			// phone.
 
-		/*     ******* POLICY: RWG should not be running at start up */
+			Utils.showToast(this, "Current Project: "
+					+ sp.getString("PROJECT_NAME", ""));
 
-		// if (RWGService.isRunning()) {
-		// Log.i(TAG, "RWG running");
-		// Utils.showToast(this, "RWG running");
-		// }
+			/*      ******* POLICY: RWG should not be running at start up */
+
+			// if (RWGService.isRunning()) {
+			// Log.i(TAG, "RWG running");
+			// Utils.showToast(this, "RWG running");
+			// }
 		}
 
 	}
 
-	public void OnResume(){
+	public void OnResume() {
 		super.onResume();
-		if(!checkPhoneRegistrationAndInitialSync()){
+		if (!checkPhoneRegistrationAndInitialSync()) {
 			Intent i = new Intent(this, RegisterActivity.class);
 			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		}
-		else{	
-		setContentView(R.layout.main);
+		} else {
+			setContentView(R.layout.main);
 
-		final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-		if (addFindButton != null)
-			addFindButton.setOnClickListener(this);
+			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
+			if (addFindButton != null)
+				addFindButton.setOnClickListener(this);
 
-		final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-		if (listFindButton != null) {
-			// Log.i(TAG, listFindButton.getText() + "");
-			listFindButton.setOnClickListener(this);
+			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
+			if (listFindButton != null) {
+				// Log.i(TAG, listFindButton.getText() + "");
+				listFindButton.setOnClickListener(this);
 			}
 		}
 	}
-	
-	public void onRestart(){
+
+	public void onRestart() {
 		super.onRestart();
-		if(!checkPhoneRegistrationAndInitialSync()){
+		if (!checkPhoneRegistrationAndInitialSync()) {
 			Intent i = new Intent(this, RegisterActivity.class);
 			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		}
-		else{	
-		setContentView(R.layout.main);
+		} else {
+			setContentView(R.layout.main);
 
-		final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-		if (addFindButton != null)
-			addFindButton.setOnClickListener(this);
+			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
+			if (addFindButton != null)
+				addFindButton.setOnClickListener(this);
 
-		final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-		if (listFindButton != null) {
-			// Log.i(TAG, listFindButton.getText() + "");
-			listFindButton.setOnClickListener(this);
+			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
+			if (listFindButton != null) {
+				// Log.i(TAG, listFindButton.getText() + "");
+				listFindButton.setOnClickListener(this);
 			}
 		}
 	}
-	
-	public void onRestoreInstanceState(Bundle savedInstanceState){
+
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		if(!checkPhoneRegistrationAndInitialSync()){
+		if (!checkPhoneRegistrationAndInitialSync()) {
 			Intent i = new Intent(this, RegisterActivity.class);
 			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		}
-		else{	
-		setContentView(R.layout.main);
+		} else {
+			setContentView(R.layout.main);
 
-		final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-		if (addFindButton != null)
-			addFindButton.setOnClickListener(this);
+			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
+			if (addFindButton != null)
+				addFindButton.setOnClickListener(this);
 
-		final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-		if (listFindButton != null) {
-			// Log.i(TAG, listFindButton.getText() + "");
-			listFindButton.setOnClickListener(this);
+			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
+			if (listFindButton != null) {
+				// Log.i(TAG, listFindButton.getText() + "");
+				listFindButton.setOnClickListener(this);
 			}
-		}		
-		
-	}
-	
-	
-	
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	switch (requestCode){
-	case LOGIN_ACTIVITY:
-		if (resultCode == LOGIN_CANCELED)
-			finish();
-		else if (resultCode == LOGIN_SUCCESSFUL){
-			Intent intent = new Intent(this, ShowProjectsActivity.class);
-			startActivity(intent);
 		}
-		break;
-	case REGISTRATION_CANCELLED:
-		finish();
-		break;
-	case REGISTRATION_ACTIVITY:
-		if(resultCode == RegisterActivity.BACK_BUTTON)
-			finish();
-	default:
-		super.onActivityResult(requestCode, resultCode, data);
+
 	}
-	
-}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case LOGIN_ACTIVITY:
+			if (resultCode == LOGIN_CANCELED)
+				finish();
+			else if (resultCode == LOGIN_SUCCESSFUL) {
+				Intent intent = new Intent(this, ShowProjectsActivity.class);
+				startActivity(intent);
+			}
+			break;
+		case REGISTRATION_CANCELLED:
+			finish();
+			break;
+		case REGISTRATION_ACTIVITY:
+			if (resultCode == RegisterActivity.BACK_BUTTON)
+				finish();
+		default:
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+
+	}
+
 	/**
 	 * Handles clicks on PositMain's buttons.
 	 */
 	public void onClick(View view) {
-		//Make sure the user has chosen a project before trying to add finds
-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		// Make sure the user has chosen a project before trying to add finds
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(this);
 		if (sp.getString("PROJECT_NAME", "").equals("")) {
 			Utils.showToast(this, "To get started, you must choose a project.");
 			Intent i = new Intent(this, ShowProjectsActivity.class);
 			startActivity(i);
-		}
-		else {
+		} else {
 			Intent intent = new Intent();
 
 			switch (view.getId()) {
@@ -250,10 +244,10 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 				intent.setClass(this, ListFindsActivity.class);
 				startActivity(intent);
 				break;
-				// case R.id.sahanaSMS:
-				// intent.setClass(this, SahanaSMSActivity.class);
-				// startActivity(intent);
-				// break;
+			// case R.id.sahanaSMS:
+			// intent.setClass(this, SahanaSMSActivity.class);
+			// startActivity(intent);
+			// break;
 			}
 		}
 	}
@@ -345,16 +339,16 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	}
 
 	/**
-	 * Returns True if the phone has an authentication key and False if it does not
+	 * Returns True if the phone has an authentication key and False if it does
+	 * not
 	 */
 	private boolean checkPhoneRegistrationAndInitialSync() {
 		String AUTH_KEY = sp.getString("AUTHKEY", "");
-		if (AUTH_KEY.equals("") || AUTH_KEY.equals(null)){
+		if (AUTH_KEY.equals("") || AUTH_KEY.equals(null)) {
 			return false;
-		}else
+		} else
 			return true;
 	}
-
 
 	/**
 	 * Intercepts the back key (KEYCODE_BACK) and displays a confirmation dialog
@@ -412,18 +406,19 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	 */
 	@Override
 	public void finish() {
-		if (RWGService.isRunning() && rwg != null) // Kill RWG if already
+		if (RWGService.isRunning() && rwg != null) {// Kill RWG if already
 			// running
 			stopService(rwg);
 
-		try {
-			rwgService.killProcessRunning("./rwgexec");
-			Utils.showToast(this, "RWG Service Stopped");
-		} catch (Exception e) {
-			Log.e(TAG, e.getClass().toString(), e);
-		}
-		mNotificationManager.cancel(Utils.ADHOC_ON_ID);
+			try {
+				rwgService.killProcessRunning("./rwgexec");
+				Utils.showToast(this, "RWG Service Stopped");
+			} catch (Exception e) {
+				Log.e(TAG, e.getClass().toString(), e);
+			}
 
+			mNotificationManager.cancel(Utils.ADHOC_ON_ID);
+		}
 		super.finish();
 	}
 
