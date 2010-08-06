@@ -14,6 +14,13 @@ New Features
  * RWG will be modularized and enabled in a future release, along with the coverage tracker
  * Due to problems with uploading project with name org.hfoss.posit to the market, changed the package name to org.hfoss.posit.android
 
+Contributors:
+Prasanna Gautam
+Rachel Foecking
+Greg Vaughan
+Scotty Eckenthal
+Benjamin Hartung
+
 === Version 0.6 Alpha ===
 
 New Features

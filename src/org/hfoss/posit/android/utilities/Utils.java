@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.hfoss.posit.android.Find;
+import org.hfoss.posit.android.Log;
 import org.hfoss.posit.android.provider.PositDbHelper;
 
 import android.content.BroadcastReceiver;
@@ -63,7 +64,6 @@ import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Media;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;

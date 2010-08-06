@@ -112,8 +112,9 @@ public class SyncActivity extends Activity {
 		Log.i(TAG, "TOTAL COMM TIME = " + Communicator.mTotalTime);
 
 		Log.i(TAG, "Stopping listener");
-		ncl.stopListening();
+		
 		try {
+			ncl.stopListening();
 			ncl.unregisterHandler(mHandler);
 		}catch (Exception e ){
 			Log.e(TAG, "Unregister Handler failed"+ e.getMessage());
