@@ -104,23 +104,25 @@ public class BarcodeBasedRegistrationActivity extends Activity {
             }
             }
         });
-	/*	
-		sandboxButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	Log.i(TAG, "sandbox button");
-            	ServerRegistrationActivity.this.isSandbox = true;
-            	if (ServerRegistrationActivity.isIntentAvailable(
-            			ServerRegistrationActivity.this, "com.google.zxing.client.android.SCAN")) {
-        			Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        			try {
-        				startActivityForResult(intent, BARCODE_READER);
-        			} catch(ActivityNotFoundException e){
-        				if(Utils.debug)
-        					Log.i(TAG, e.toString());
-        			}
-        		}
-            }
-        });*/
+		
+//  Refactor:  This needs to be documented or removed.		
+//	/*	
+//		sandboxButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//            	Log.i(TAG, "sandbox button");
+//            	ServerRegistrationActivity.this.isSandbox = true;
+//            	if (ServerRegistrationActivity.isIntentAvailable(
+//            			ServerRegistrationActivity.this, "com.google.zxing.client.android.SCAN")) {
+//        			Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+//        			try {
+//        				startActivityForResult(intent, BARCODE_READER);
+//        			} catch(ActivityNotFoundException e){
+//        				if(Utils.debug)
+//        					Log.i(TAG, e.toString());
+//        			}
+//        		}
+//            }
+//        });*/
 	}
 
 	/**
