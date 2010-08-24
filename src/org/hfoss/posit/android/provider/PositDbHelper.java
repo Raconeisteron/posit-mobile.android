@@ -153,6 +153,9 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		+ ");";
 	
 	
+	/*
+	 * Creates the Photos table.
+	 */
 	private static final String CREATE_IMAGES_TABLE = "CREATE TABLE IF NOT EXISTS "
 		+ PHOTOS_TABLE  
 		+ " (" + PHOTOS_ID + " integer primary key autoincrement, "  // dB Key
@@ -166,7 +169,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		+ FINDS_TIME + " timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP" //text, "
 		+ ");" ;
 
-	/**
+	/*
 	 * Keeps track of create, update, and delete actions on Finds.
 	 */
 	private static final String CREATE_FINDS_HISTORY_TABLE = 
@@ -179,7 +182,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		+ FINDS_ACTION + " varchar(20) NOT NULL"
 		+ ")";
 		
-	/**
+	/*
 	 * Keeps track of sync actions between client (phone) and server
 	 */
 	private static final String CREATE_SYNC_HISTORY_TABLE = 
@@ -190,7 +193,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		+ SYNC_COLUMN_SERVER + " varchar(50) NOT NULL "
 		+ ")";
 
-	/**
+	/*
 	 * Keeps track of sync actions between client (phone) and server
 	 */
 	private static final String INITIALIZE_SYNC_HISTORY_TABLE = 
@@ -198,7 +201,7 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		+ FINDS_TIME + "," + SYNC_COLUMN_SERVER + ")" 
 		+ " VALUES (datetime('now'),'noserver')";
 
-	/**
+	/*
 	 * Keeps track of sync actions between client (phone) and serve
 	 */
 	private static final String TIMESTAMP_FIND_UPDATE = 
@@ -664,53 +667,6 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		mDb.close();
 		return result;
 	}
-	
-
-//	/** 
-//	 * DEPRECATED:  PositDbHelper will not return a Cursor for Finds 
-//	 *  unnecssary and causes memory leaks
-//	 * Returns a Cursor with rows of all columns for all Finds.
-//	 * @return
-//	 */
-//	public Cursor fetchAllFinds() {
-//		mDb = getReadableDatabase(); // Either open or create the DB.
-//		Cursor c = mDb.query(FINDS_TABLE,null, WHERE_NOT_DELETED, null, null, null, null);
-//		Log.i(TAG,"fetchAllFinds, count=" + c.getCount());
-//		c.close();  // Can you really close the Cursor before returning it?
-//		mDb.close();
-//		return c;
-//	}
-	
-//	/** 
-//	 * DEPRECATED:  PositDbHelper will not return a Cursor for Finds 
-//	 *  unnecssary and causes memory leaks
-//	 * Returns a Cursor with rows of selected columns for all Finds.
-//	 * @return
-//	 */
-//	public Cursor fetchAllFinds(String[] columns){
-//		mDb = getReadableDatabase(); // Either open or create the DB.
-//		Cursor c = null;
-//		c = mDb.query(FINDS_TABLE, columns, WHERE_NOT_DELETED, null, null, null, null); //  NOTE WELL: Closing causes an error in cursor mgmt
-//		Log.i(TAG,"fetchAllFinds, count=" + c.getCount());
-//		return c;
-//	}
-
-
-//	/**
-//	 * DEPRECATED:  PositDbHelper will not return a Cursor for Finds 
-//	 *  unnecssary and causes memory leaks 
-//	 * Returns a cursor with rows for all Finds
-//	 * @param guid the Finds globally unique Id
-//	 * @return
-//	 */
-//	public Cursor fetchFindsByGuid(String guId) {
-//		mDb = getWritableDatabase();
-//		Cursor cursor = mDb.query(FINDS_TABLE, null, 
-//				WHERE_NOT_DELETED + " AND " + FINDS_GUID + "=" + guId, null, null, null, null);
-//		if (DBG) Log.i(TAG, "fetchFindsByGuid, count = " + cursor.getCount()+"");
-//		mDb.close();
-//		return cursor;
-//	}
 
 
 	/** 
