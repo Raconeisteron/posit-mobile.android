@@ -555,7 +555,7 @@ public class Communicator {
 
 		try {
 			responseString = mHttpClient.execute(post, responseHandler);
-			//Log.i(TAG, "responseString = " + responseString);
+			Log.d(TAG, "doHTTPpost responseString = " + responseString);
 		} catch (ClientProtocolException e) {
 			Log.e(TAG, "ClientProtocolExcpetion" + e.getMessage());
 			e.printStackTrace();
@@ -575,7 +575,7 @@ public class Communicator {
 		}
 		long time = System.currentTimeMillis() - startTime;
 		mTotalTime += time;
-		Log.i(TAG, "respose = " + responseString + " TIME = " + time + " millisecs");
+		Log.i(TAG, "doHTTPpost response = " + responseString + " TIME = " + time + " millisecs");
 
 		return responseString;
 	}

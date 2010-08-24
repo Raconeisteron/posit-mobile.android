@@ -252,51 +252,6 @@ public class ListFindsActivity extends ListActivity implements ViewBinder{
 	}
 
 	/**
-	 * What is this and why is it here??
-	 */
-	//	public void generateGeoRSS() {
-	//		mCursor = mDbHelper.fetchAllFinds(PROJECT_ID);
-	//		startManagingCursor(mCursor);
-	//
-	//		try{
-	//			FileOutputStream fout = new FileOutputStream("/data/rss/data.xml");
-	//			PrintStream out = new PrintStream(fout);
-	//			out.println("<feed xmlns=\"http://www.w3.org/2005/Atom\"");
-	//			out.println("xmlns:georss=\"http://www.georss.org/georss\"");
-	//			out.println("xmlns:gml=\"http://www.opengis.net/gml\">");
-	//			mCursor.moveToFirst();
-	//			while(!mCursor.isAfterLast()) {
-	//				out.println("<entry>");
-	//				out.println("<title>"+
-	//					mCursor.getString(mCursor.getColumnIndexOrThrow(MyDBHelper.COLUMN_NAME))+
-	//					"</title>");
-	//				out.println("<description>"+
-	//					mCursor.getString(mCursor.getColumnIndexOrThrow(MyDBHelper.COLUMN_DESCRIPTION))+
-	//					"</description>");
-	//				out.println("<georss:where>");
-	//				out.println("<gml:Point>");
-	//				out.println("<gml:pos>"+
-	//					mCursor.getDouble(mCursor.getColumnIndexOrThrow(MyDBHelper.COLUMN_LATITUDE))+" "+
-	//					mCursor.getDouble(mCursor.getColumnIndexOrThrow(MyDBHelper.COLUMN_LONGITUDE))+
-	//					"</gml:pos>");
-	//				out.println("</gml:Point>");
-	//				out.println("</georss:where>");
-	//				out.println("<datetime>"+
-	//						mCursor.getString(mCursor.getColumnIndexOrThrow(MyDBHelper.COLUMN_TIME))+
-	//						"</datetime>");
-	//				out.println("</entry>");
-	//				mCursor.moveToNext();
-	//			}
-	//			out.println("</feed>");
-	//			out.close();
-	//		}
-	//		catch(IOException e){e.printStackTrace();}
-	//		finally{
-	//			Utils.showToast(this, "GeoRSS created!");
-	//		}
-	//	}
-
-	/**
 	 * Called automatically by the SimpleCursorAdapte.  
 	 */
 	public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
