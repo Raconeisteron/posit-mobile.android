@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+//  This class appears to be unused and should be deleted from the project. 
 public class PositContentProvider extends ContentProvider{
 
 	public static final String PROVIDER_NAME = "org.hfoss.provider.POSIT";

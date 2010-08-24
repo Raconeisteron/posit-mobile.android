@@ -34,10 +34,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * Tutorial activity is a class designed to make the user more comfortable with
- * posit the first time posit is opened. contains 4 pages of information, with
- * previous, next, skip, and finish buttons.
- * 
+ * This class designed to make the user more comfortable with
+ * posit the first time posit is opened. The user navigates through the tutorial
+ * using previous, next, skip, and finish buttons.
  */
 
 public class TutorialActivity extends Activity implements OnClickListener {
@@ -60,7 +59,7 @@ public class TutorialActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		mWebView = new WebView(this);
 		setContentView(R.layout.tutorial_view);
-		pageNumber = 1;
+		pageNumber = 0;
 		skip = (Button) findViewById(R.id.skipButton);
 		next = (Button) findViewById(R.id.nextButton);
 		previous = (Button) findViewById(R.id.previousButton);
@@ -82,9 +81,16 @@ public class TutorialActivity extends Activity implements OnClickListener {
 	 */
 	private void updateView() {
 		switch (pageNumber) {
-		case 1:
+		case 0:
 			findViewById(R.id.previousButton).setVisibility(EditText.GONE);
 			mWebView = (WebView) (findViewById(R.id.tutorialView));
+			mWebView.loadUrl("file:///android_asset/tutorialpage0.html");
+			break;
+		case 1:
+			findViewById(R.id.previousButton).setVisibility(EditText.GONE);
+			findViewById(R.id.skipButton).setVisibility(EditText.VISIBLE);
+			findViewById(R.id.previousButton).setVisibility(EditText.VISIBLE);
+			//mWebView = (WebView) (findViewById(R.id.tutorialView));
 			mWebView.loadUrl("file:///android_asset/tutorialpage1.html");
 			break;
 		case 2:
@@ -100,9 +106,15 @@ public class TutorialActivity extends Activity implements OnClickListener {
 			mWebView.loadUrl("file:///android_asset/tutorialpage3.html");
 			break;
 		case 4:
+			findViewById(R.id.finishButton).setVisibility(EditText.GONE);
+			findViewById(R.id.skipButton).setVisibility(EditText.VISIBLE);
+			findViewById(R.id.previousButton).setVisibility(EditText.VISIBLE);
+			mWebView.loadUrl("file:///android_asset/tutorialpage4.html");
+			break;
+		case 5:
 			findViewById(R.id.finishButton).setVisibility(EditText.VISIBLE);
 			findViewById(R.id.skipButton).setVisibility(EditText.GONE);
-			mWebView.loadUrl("file:///android_asset/tutorialpage4.html");
+			mWebView.loadUrl("file:///android_asset/tutorialpage5.html");
 			break;
 		}
 
