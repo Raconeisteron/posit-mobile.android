@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.hfoss.posit.android.Constants;
@@ -75,14 +77,12 @@ import android.telephony.TelephonyManager;
  */
 public class Communicator {
 	private static final String MESSAGE = "message";
-
 	private static final String MESSAGE_CODE = "messageCode";
-
 	private static final String ERROR_MESSAGE = "errorMessage";
-
 	private static final String ERROR_CODE = "errorCode";
-
 	private static final String COLUMN_IMEI = "imei";
+	public static final int CONNECTION_TIMEOUT = 3000; // millisecs
+	public static final int SOCKET_TIMEOUT = 5000;
 
 	/*
 	 * You should be careful with putting names for server. DO NOT always trust
@@ -112,6 +112,14 @@ public class Communicator {
 		mStart = 0;
 
 		mHttpParams = new BasicHttpParams();
+
+		// Set the timeout in milliseconds until a connection is established.
+		HttpConnectionParams.setConnectionTimeout(mHttpParams, CONNECTION_TIMEOUT);
+		
+		// Set the default socket timeout (SO_TIMEOUT) 
+		// in milliseconds which is the timeout for waiting for data.
+		HttpConnectionParams.setSoTimeout(mHttpParams, SOCKET_TIMEOUT);
+
 		SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
 		mConnectionManager = new ThreadSafeClientConnManager(mHttpParams,
@@ -163,6 +171,9 @@ public class Communicator {
 		responseString = doHTTPGET(url);
 		if (Utils.debug)
 			Log.i(TAG, responseString);
+		if (responseString.contains("Error")) {
+			return null;
+		}
 		list = new ArrayList<HashMap<String, Object>>();
 		try {
 			list = (ArrayList<HashMap<String, Object>>) (new ResponseParser(
@@ -225,14 +236,18 @@ public class Communicator {
 		try {
 			responseString = doHTTPPost(url,sendMap);
 			Log.i(TAG, "longinUser response = " + responseString);
-			if (responseString.contains("[ERROR]")){
+			if (responseString.contains("[Error] ")){
 				Utils.showToast(mContext, responseString);
-				return Constants.AUTHN_FAILED+":"+ "Error";
+				return Constants.AUTHN_FAILED+":"+ responseString;
+			} else {
+				ResponseParser parser = new ResponseParser(responseString);
+				responseMap = parser.parseObject();
 			}
-			ResponseParser parser = new ResponseParser(responseString);
-			responseMap = parser.parseObject();
 		} catch (Exception e) {
+			Log.i(TAG, "longinUser catch clause response = " + responseString);
 			Utils.showToast(mContext, e.getMessage()+"");
+//			return Constants.AUTHN_FAILED+":"+e.getMessage();
+			return Constants.AUTHN_FAILED+":"+responseString;
 		}
 		try {
 			if (responseMap.containsKey(ERROR_CODE))
@@ -306,9 +321,9 @@ public class Communicator {
 		sendMap.put("lastname", lastname);
 		try {
 			responseString = doHTTPPost(url,sendMap);
-			Log.i(TAG, responseString);
+			Log.i(TAG, "registerUser Httpost responseString = " + responseString);
 			if (responseString.contains("[ERROR]")){
-				Utils.showToast(mContext, responseString);
+				Utils.showToast(mContext, Constants.AUTHN_FAILED+":"+responseString);
 				return Constants.AUTHN_FAILED+":"+ responseString;
 			}
 			ResponseParser parser = new ResponseParser(responseString);
@@ -542,7 +557,9 @@ public class Communicator {
 		} catch (URISyntaxException e) {
 			Log.e(TAG, "URISyntaxException " + e.getMessage());
 			e.printStackTrace();
-			return e.getMessage();
+		//	return e.getMessage();
+			return "[Error] " + e.getMessage();
+
 		}
 		List<NameValuePair> nvp = PositHttpUtils.getNameValuePairs(sendMap);
 		ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -550,6 +567,7 @@ public class Communicator {
 			post.setEntity(new UrlEncodedFormEntity(nvp, HTTP.UTF_8));
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "UnsupportedEncodingException " + e.getMessage());
+			return "[Error] " + e.getMessage();
 		}
 		mStart = System.currentTimeMillis();
 
@@ -557,21 +575,25 @@ public class Communicator {
 			responseString = mHttpClient.execute(post, responseHandler);
 			Log.d(TAG, "doHTTPpost responseString = " + responseString);
 		} catch (ClientProtocolException e) {
-			Log.e(TAG, "ClientProtocolExcpetion" + e.getMessage());
+			Log.e(TAG, "ClientProtocolException" + e.getMessage());
 			e.printStackTrace();
-			return e.getMessage();
+			//return e.getMessage();
+			return "[Error] " + e.getMessage();
 		} catch (IOException e) {
 			Log.e(TAG, "IOException " + e.getMessage());
 			e.printStackTrace();
-			return e.getMessage();
+			//return e.getMessage();
+			return "[Error] " + e.getMessage();
 		} catch (IllegalStateException e) {
 			Log.e(TAG, "IllegalStateException: " + e.getMessage());
 			e.printStackTrace();
-			return e.getMessage();
+			//return e.getMessage();
+			return "[Error] " + e.getMessage();
 		} catch (Exception e) {
 			Log.e(TAG, "Exception on HttpPost " + e.getMessage());
 			e.printStackTrace();
-			return e.getMessage();
+			//return e.getMessage();
+			return "[Error] " + e.getMessage();
 		}
 		long time = System.currentTimeMillis() - startTime;
 		mTotalTime += time;
@@ -584,6 +606,8 @@ public class Communicator {
 		String url = server+"/api/projectExists?authKey="+authKey+"&projectId="+projectId;
 		Log.i(TAG, url);
 		String response = doHTTPGET(url);
+		Log.i(TAG, "projectExists response = " + response);
+
 		if(response.equals("true"))
 			return true;
 		if(response.equals("false"))
@@ -607,7 +631,7 @@ public class Communicator {
 		} catch (URISyntaxException e) {
 			Log.e(TAG, "doHTTPGet " + e.getMessage());
 			e.printStackTrace();
-			return "[Error]" + e.getMessage();
+			return "[Error] " + e.getMessage();
 		}
 		if (Utils.debug) {
 			Log.i(TAG, "doHTTPGet Uri = " + Uri);
@@ -620,15 +644,19 @@ public class Communicator {
 		} catch (ClientProtocolException e) {
 			Log.e(TAG, "ClientProtocolException" + e.getMessage());
 			e.printStackTrace();
-			return "[Error]" + e.getMessage();
+			return "[Error] " + e.getMessage();
+		} catch (SocketTimeoutException e) {
+			Log.e(TAG, "[Error: SocketTimeoutException]" + e.getMessage());
+			e.printStackTrace();
+			return "[Error] " + e.getMessage();			
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
-			return "[Error]" + e.getMessage();
+			return "[Error] " + e.getMessage();
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
-			return "[Error]" + e.getMessage();
+			return "[Error] " + e.getMessage();
 		}
 
 		long time = System.currentTimeMillis() - mStart;
