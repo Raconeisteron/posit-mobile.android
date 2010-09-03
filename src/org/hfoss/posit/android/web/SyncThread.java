@@ -171,6 +171,8 @@ public class SyncThread extends Thread {
 
 		// Wait here to make sure there is a WIFI connection
 		waitHere();
+		
+		// Check that project exists
 		if(!comm.projectExists(""+mProjectId, server))
 			mHandler.sendEmptyMessage(PROJECTERROR);
 		
