@@ -233,7 +233,7 @@ public class Utils {
 	
 	
     /**
-     * Removes '[Error]' or '[Success'] from the beginning of the response strings
+     * Removes '[Error] ' or '[Success'] from the beginning of the response strings
      * that are returned from http Post and Get.
      * @param response
      * @return
