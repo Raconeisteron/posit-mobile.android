@@ -25,6 +25,7 @@ package org.hfoss.posit.android;
 import java.util.List;
 
 import org.apache.commons.validator.EmailValidator;
+import org.hfoss.posit.android.adhoc.RWGService;
 import org.hfoss.posit.android.utilities.Utils;
 import org.hfoss.posit.android.web.Communicator;
 import org.json.JSONException;
@@ -315,7 +316,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 						"Please wait.", true, true);
 				try {
 					String registered = communicator.registerDevice(server, authKey, imei);
-
+					Log.d(TAG, "onActivityResult, registered = " + registered);
 					if (registered != null) {
 						Log.i(TAG, "registered");
 						Editor spEditor = mSharedPrefs.edit();
@@ -333,6 +334,8 @@ public class RegisterActivity extends Activity implements OnClickListener{
 					}
 				} catch (NullPointerException e) {
 					Utils.showToast(this, "Registration Error");
+				} finally {
+					mProgressDialog.dismiss();
 				}
 
 				mProgressDialog.dismiss();
@@ -410,7 +413,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			Utils.showToast(this, "Failed to get authentication key from server.");
 			mProgressDialog.dismiss();
 			return;
-		}
+		} 
 		//TODO this is still little uglyish
 		String[] message = result.split(":");
 		if (message.length != 2  || message[1].equals("null")){
@@ -440,10 +443,34 @@ public class RegisterActivity extends Activity implements OnClickListener{
 				finish();
 			}
 		}else {
-			Utils.showToast(this, message[1]);
+			Utils.showToast(this, message[1]) +
+					"\nMake sure you have connectivity" +
+					" and a working server.");
+			mProgressDialog.dismiss();
 			return;
 		}
 		mProgressDialog.dismiss();
+	}
+
+	/**
+	 * Manages the selection of menu items.
+	 *
+	 * @see android.app.Activity#onMenuItemSelected(int, android.view.MenuItem)
+	 */
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.settings_menu_item:
+			startActivity(new Intent(this, SettingsActivity.class));
+			break;
+		case R.id.about_menu_item:
+			startActivity(new Intent(this, AboutActivity.class));
+			break;
+		case R.id.tutorial_menu_item:
+			startActivity(new Intent(this, TutorialActivity.class));
+			break;
+		}
+		return true;
 	}
 
 	/**
