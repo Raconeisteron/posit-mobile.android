@@ -39,6 +39,7 @@ import android.util.Log;
  */
 public class ResponseParser {
 	String response = null;
+	public static final String TAG = "ResponseParser";
 
 	public ResponseParser(String response) {
 		this.response = response;
@@ -52,6 +53,7 @@ public class ResponseParser {
 	 * @throws JSONException
 	 */
 	public Object parse() throws JSONException {
+		Log.i(TAG, "parse() response= " + response);
 		if (response.equals(null))
 			throw new NullPointerException("Pass a response first");
 		if (response.charAt(0) == '[') {
@@ -71,6 +73,8 @@ public class ResponseParser {
 	 * @throws JSONException
 	 */
 	public List<HashMap<String, Object>> parseList() throws JSONException {
+		Log.i(TAG, "parseList() response = " + response);
+
 		if (response.equals(null))
 			throw new NullPointerException("Pass a response first");
 		List<HashMap<String, Object>> findsList = new ArrayList<HashMap<String, Object>>();
@@ -84,6 +88,7 @@ public class ResponseParser {
 	}
 
 	public HashMap<String, Object> parseObject() throws JSONException {
+		Log.i(TAG, "parseObject() response = " + response);
 		HashMap<String, String> responseMessage = new HashMap<String, String>();
 		if (response.equals(null))
 			throw new NullPointerException("Pass a response first");
@@ -94,6 +99,8 @@ public class ResponseParser {
 
 	private HashMap<String, Object> jsonObjectToMap(JSONObject json)
 			throws JSONException {
+		Log.i(TAG, "jsonObjectToMap()");
+
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		Iterator<String> iterKeys = json.keys();
 		while (iterKeys.hasNext()) {

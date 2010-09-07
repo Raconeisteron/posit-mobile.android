@@ -117,7 +117,7 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 			          android.R.layout.simple_list_item_1, projList));
 			
 		} else {
-			this.reportNetworkError("Null project list returned.\nCheck network connection.");
+			this.reportNetworkError("Null project list returned.\nMake sure your server is reachable.");
 		}
 	}
 	
