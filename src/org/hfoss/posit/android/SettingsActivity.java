@@ -41,6 +41,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	private static final String TAG = "SettingsActivity";
 	protected static final int BARCODE_READER = 0;
 	private String server;
+	private String projectName;
 	private Preference serverAddress;
 	private Preference project;
 	private Preference user;
@@ -55,7 +56,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		server = sp.getString("SERVER_ADDRESS", "");
 		String email = sp.getString("EMAIL","");
 		
-		String projectName = sp.getString("PROJECT_NAME","");
+		projectName = sp.getString("PROJECT_NAME","");
 		
 		Preference regUser = this.findPreference("regUser");
 		Preference regDevice = this.findPreference("regDevice");
@@ -107,6 +108,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 				EditText eText =  textPreference.getEditText();
 				eText.setText(server);
 			}
+			Log.i(TAG, "Server = " + server);
 		}
 //		if(preference.getTitle().toString().equals("Login")){
 //			Intent i = new Intent(this, RegisterPhoneActivity.class);
@@ -124,17 +126,23 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		 Log.i(TAG, "onSharedPreferenceChanged");
 
 		 if (key.equals("SERVER_ADDRESS")){
-			server = sp.getString("SERVER_ADDRESS", "");
-			if (server != null) {
-				serverAddress.setSummary(server); 
-				}
-			Editor edit = sp.edit();
-			edit.putString("PROJECT_NAME", "");
-			edit.putString("AUTHKEY", "");
-			edit.putInt("PROJECT_ID", 0);
-			edit.commit();
-			finish();
-			
+			 Log.i(TAG, "Server1 = " + server);
+			 String tempServer = sp.getString("SERVER_ADDRESS", "");
+
+			 Log.i(TAG, "Server2 = " + tempServer);
+			 if (!server.equals(tempServer)) {
+
+				 if (server != null) {
+					 serverAddress.setSummary(server); 
+				 }
+				 Editor edit = sp.edit();
+				 edit.putString("PROJECT_NAME", "");
+				 edit.putString("AUTHKEY", "");
+				 edit.putInt("PROJECT_ID", 0);
+				 edit.commit();
+				 finish();
+			 }
+
 		 }
 		 else if (key.equals("PROJECT_NAME")){
 				String projectName = sp.getString("PROJECT_NAME", "");
