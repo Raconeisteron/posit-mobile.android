@@ -61,7 +61,6 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 
 	private ArrayList<HashMap<String, Object>> projectList;
 	private RadioGroup mRadio;	
-	private int currentProjectId;
 
 	/**
 	 * Called when the activity is first started.  Shows a list of 
@@ -75,8 +74,6 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 		Button addProjectButton = (Button)findViewById(R.id.idAddProjButton);
 		addProjectButton.setOnClickListener(this);
 
-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-		currentProjectId = sp.getInt("PROJECT_ID", 0);
 		showProjects();
 		
 
@@ -119,7 +116,7 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 		} else {
 			this.reportNetworkError("Null project list returned.\nMake sure your server is reachable.");
 		}
-	}
+	} 
 	
 
 	
@@ -147,6 +144,13 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 		String projectName = (String) projectList.get(mClickedPosition).get("name");
 		
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		int currentProjectId = sp.getInt("PROJECT_ID",0);
+		
+		if (id == currentProjectId){
+			finish();
+			return;
+		}
+		
 		Editor editor = sp.edit();
 
 		editor.putInt("PROJECT_ID", id);
