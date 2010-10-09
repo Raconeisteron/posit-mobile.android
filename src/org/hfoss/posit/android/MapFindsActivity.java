@@ -27,9 +27,12 @@ import org.hfoss.posit.android.provider.PositDbHelper;
 import org.hfoss.posit.android.utilities.MyItemizedOverlay;
 import org.hfoss.posit.android.utilities.Utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -87,6 +90,29 @@ public class MapFindsActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 		mapFinds();
+		
+		// Zoom into current position
+		Log.d("MapFindsActivity:onResume", "Zoom into currrent location");
+		int latitude = 0;
+		int longitude = 0;
+		
+		LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+		Location loc = mlocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		
+		Log.d("MapFindsActivity:onResume", "Got Location " + loc);
+		
+		if (loc != null) {
+			latitude = (int) (loc.getLatitude()*1E6);//(int) (c.getDouble(c.getColumnIndex(PositDbHelper.FINDS_LATITUDE))*1E6);
+			longitude = (int) (loc.getLongitude()*1E6);
+		} else {
+			latitude = 0;
+			longitude = 0;
+		}
+
+		mapController.setCenter(new GeoPoint(latitude, longitude));
+		mapController.setZoom(14);
+		
 	}
 
 	/**
