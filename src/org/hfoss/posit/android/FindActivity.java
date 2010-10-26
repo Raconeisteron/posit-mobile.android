@@ -24,6 +24,9 @@ package org.hfoss.posit.android;
 // NOTE: for now the barcode scanner and the base64coder has been commented out at the following lines:
 // 37,  206, 207, 216, and 279-281
 
+import java.net.BindException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -143,6 +146,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 	private static final int CONFIRM_DELETE_DIALOG = 0;
 	private static final int UPDATE_LOCATION = 2;
 	private static final int CONFIRM_EXIT=3;
+	private static final int CONFIRM_SAVE_EMPTY_FIND=4;
 	private static final boolean ENABLED_ONLY = true;
 	private static final int THUMBNAIL_TARGET_SIZE = 320;
 	
@@ -468,27 +472,27 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		switch (id) {
 		case CONFIRM_DELETE_DIALOG:
 			return new AlertDialog.Builder(this)
-			.setIcon(R.drawable.alert_dialog_icon)
-			.setTitle(R.string.alert_dialog_2)
-			.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					// User clicked OK so do some stuff 
-					if (mFind.delete()) // Assumes find was instantiated in onCreate
-					{
-						Utils.showToast(FindActivity.this, R.string.deleted_from_database);
-						finish();
-					}	else 
-						Utils.showToast(FindActivity.this, R.string.delete_failed);
+				.setIcon(R.drawable.alert_dialog_icon)
+				.setTitle(R.string.alert_dialog_2)
+				.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// User clicked OK so do some stuff 
+						if (mFind.delete()) // Assumes find was instantiated in onCreate
+						{
+							Utils.showToast(FindActivity.this, R.string.deleted_from_database);
+							finish();
+						}	else { 
+							Utils.showToast(FindActivity.this, R.string.delete_failed);
+						}
+					}
 				}
-			}
-			)
-			.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					/* User clicked Cancel so do nothing */
-				}
-			})
-
-			.create();
+				)
+				.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						/* User clicked Cancel so do nothing */
+					}
+				})
+				.create();
 
 		case CONFIRM_EXIT:
 			Log.i(TAG, "CONFIRM_EXIT dialog");
@@ -516,6 +520,26 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 				}
 			})
 			.create();
+
+		case CONFIRM_SAVE_EMPTY_FIND:
+			return new AlertDialog.Builder(this)
+				.setIcon(R.drawable.alert_dialog_icon)
+				.setTitle(R.string.alert_dialog_save_empty_find)
+				.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// User clicked OK so save Find even though no name/description
+						ContentValues contentValues = retrieveContentFromView();
+						doSave(contentValues);
+					}
+				}
+				)
+				.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						/* User clicked Cancel so do nothing */
+					}
+				})
+				.create();
+			
 		default:
 			return null;
 		} // switch
@@ -616,15 +640,11 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		switch (item.getItemId()) {
 
 		case R.id.save_find_menu_item:
-			long start;
-			Log.i("start",(start=System.currentTimeMillis())+"");
 			ContentValues contentValues = retrieveContentFromView();
-			Log.i("after retrive", (System.currentTimeMillis()-start)+"");
+
 			//if (IS_ADHOC)
 			if (RWGService.isRunning())
 				sendAdhocFind(contentValues,null);//imageBase64String);
-			Log.i("after adhoc check", (System.currentTimeMillis()-start)+"");
-			
 			doSave(contentValues);
 			//Intent in = new Intent(this, ListFindsActivity.class); //redirect to list finds
 			//startActivity(in);
@@ -1081,4 +1101,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 			}
 		}
 	}
+	
+	
+	
 }
