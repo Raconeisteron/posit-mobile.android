@@ -21,6 +21,7 @@
  */
 package org.hfoss.posit.android;
 
+import org.hfoss.posit.android.utilities.Utils;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -141,6 +142,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 				 edit.putInt("PROJECT_ID", 0);
 				 edit.commit();
 				 finish();
+			 }
+			 else {
+				 Utils.showToast(this, "'" + server + "' is already the current server.");
 			 }
 
 		 }
