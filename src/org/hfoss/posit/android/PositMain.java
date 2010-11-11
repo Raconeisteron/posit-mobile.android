@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -46,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 /**
  * Implements the main activity and the main screen for the POSIT application.
@@ -98,8 +100,9 @@ RWGConstants {
 		if (!mSharedPrefs.getBoolean("tutorialComplete", false)) {
 			Intent i = new Intent(this, TutorialActivity.class);
 			startActivity(i);
-		}  else 
+		} else { 
 			startPOSIT();
+		}
 
 		Utils.showToast(this, "Server: "  + mSharedPrefs.getString("SERVER_ADDRESS", ""));
 	}
@@ -130,6 +133,15 @@ RWGConstants {
 			if (listFindButton != null) {
 				// Log.i(TAG, listFindButton.getText() + "");
 				listFindButton.setOnClickListener(this);
+			}
+			
+			final TextView version = (TextView) findViewById(R.id.version);
+			try {
+				version.setText(getPackageManager().getPackageInfo("org.hfoss.posit.android", 0).versionName);
+			} catch(NameNotFoundException nnfe) {
+				//shouldn't happen
+				Log.w(TAG, nnfe.toString(), nnfe);
+				version.setVisibility(View.INVISIBLE);
 			}
 		}
 	}

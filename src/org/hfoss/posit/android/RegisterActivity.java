@@ -40,10 +40,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -65,9 +67,15 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	private static final String TAG = "RegisterActivity";
 	private static final int LOGIN_BY_BARCODE_READER = 0;
 	private static final int PROMPT_REGISTRATION = 0;
+	private static final int CONFIRM_EXIT = 1;
 
 	public static final String REGISTER_USER = "RegisterUser";
 	public static final String REGISTER_PHONE = "RegisterPhone";
+
+	private int currentView;
+	private static final int VIEW_MAIN = 0;
+	private static final int VIEW_LOGIN = 1;
+	private static final int VIEW_REGISTER = 2;
 
 
 	private SharedPreferences mSharedPrefs;
@@ -88,6 +96,16 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			finish();
 		
 		setContentView(R.layout.main_register);
+		currentView = VIEW_MAIN;
+
+		final TextView version = (TextView) findViewById(R.id.version);
+		try {
+			version.setText(getPackageManager().getPackageInfo("org.hfoss.posit.android", 0).versionName);
+		} catch(NameNotFoundException nnfe) {
+			//shouldn't happen
+			Log.w(TAG, nnfe.toString(), nnfe);
+			version.setVisibility(View.INVISIBLE);
+		}
 
 		// Register existing user button
 		Button register = (Button) findViewById(R.id.register);
@@ -259,6 +277,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	private void createNewUserAccount() {
 		Log.i(TAG,"Creating new user");
 		setContentView(R.layout.registeruser);
+		currentView = VIEW_LOGIN;
 		String server = mSharedPrefs.getString("SERVER_ADDRESS", "");
 		String email = mSharedPrefs.getString("EMAIL", "");
 		((TextView) findViewById(R.id.serverName)).setText(server);
@@ -355,6 +374,34 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	}
 	
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode==KeyEvent.KEYCODE_BACK){
+			if (currentView != VIEW_MAIN) {
+				setContentView(R.layout.main_register);
+				currentView = VIEW_MAIN;
+				
+				// Register existing user button
+				Button register = (Button) findViewById(R.id.register);
+				if (register != null) {
+					register.setOnClickListener(this);
+				}
+				
+				// Create new user button
+				Button login = (Button) findViewById(R.id.login);
+				if (login != null)
+					login.setOnClickListener(this);
+			} else {
+				showDialog(CONFIRM_EXIT);
+			}
+			return true;
+		}
+		Log.i("code", keyCode+"");
+		return super.onKeyDown(keyCode, event);
+	}
+
+	
+	
 	/**
 	 * For a user with an existing account on the server, this method will register
 	 * the phone, resulting in an authKey being sent to the phone by the server and
@@ -364,6 +411,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		Log.i(TAG,"Creating new user");
 
 		setContentView(R.layout.registerphone);
+		currentView = VIEW_REGISTER;
 
 		mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String serverName = mSharedPrefs.getString("SERVER_ADDRESS", "");
@@ -497,11 +545,11 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		switch (id) {
 		case PROMPT_REGISTRATION:
 			return new AlertDialog.Builder(this)
-				.setIcon(R.drawable.icon)
-				.setMessage("To effectively use POSIT " +
-							" you should register with a POSIT server. " +
-							" Either create an account on " +
-							getString(R.string.defaultServer) + " or create a new account.")
+			.setIcon(R.drawable.icon)
+			.setMessage("To effectively use POSIT " +
+					" you should register with a POSIT server. " +
+					" Either create an account on " +
+					getString(R.string.defaultServer) + " or create a new account.")
 					.setPositiveButton(R.string.alert_dialog_ok,
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
@@ -510,7 +558,25 @@ public class RegisterActivity extends Activity implements OnClickListener{
 						}
 					})
 					.create();
-			
+		case CONFIRM_EXIT:
+			return new AlertDialog.Builder(this).setIcon(
+					R.drawable.alert_dialog_icon).setTitle(R.string.exit)
+					.setPositiveButton(R.string.alert_dialog_ok,
+							new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// User clicked OK so do some stuff
+							setResult(PositMain.LOGIN_CANCELED);
+							finish();
+						}
+					}).setNegativeButton(R.string.alert_dialog_cancel,
+							new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							/* User clicked Cancel so do nothing */
+						}
+					}).create();
+
 		default:
 			return null;
 		}
