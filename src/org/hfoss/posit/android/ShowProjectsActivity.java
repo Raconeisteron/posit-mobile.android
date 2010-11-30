@@ -147,6 +147,7 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 		int currentProjectId = sp.getInt("PROJECT_ID",0);
 		
 		if (id == currentProjectId){
+			Utils.showToast(this, "'" + projectName + "' is already the current project.");
 			finish();
 			return;
 		}
