@@ -480,10 +480,15 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 						if (mFind.delete()) // Assumes find was instantiated in onCreate
 						{
 							Utils.showToast(FindActivity.this, R.string.deleted_from_database);
-							finish();
 						}	else { 
 							Utils.showToast(FindActivity.this, R.string.delete_failed);
 						}
+						if (mFind.deleteFindPhotos()) {
+							Utils.showToast(FindActivity.this, "Find's photos deleted from DB");
+						} else {
+							Utils.showToast(FindActivity.this, "Unable to delete find's photos from DB");
+						}
+						finish();
 					}
 				}
 				)

@@ -192,12 +192,22 @@ public class Find {
 	}
 	
 	/**
-	 * deletes the Find object form the DB
+	 * deletes the Find object form the DB, not including its photos
+	 * Call deleteFindPhotos() to delete its photos.
 	 * @return whether the DB operation was successful
 	 */
 	public boolean delete() {
 		Log.i(TAG,"deleteing find #"+mId);
 		return mDbHelper.deleteFind(mId);
+	}
+	
+	/**
+	 * deletes the photos associated with this find.
+	 * @return
+	 */
+	public boolean deleteFindPhotos() {
+		Log.i(TAG,"deleteing find #"+mId);
+		return mDbHelper.deletePhotosById(mId);
 	}
 
 	/**
