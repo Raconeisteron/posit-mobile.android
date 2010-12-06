@@ -570,11 +570,12 @@ public class PositDbHelper extends SQLiteOpenHelper {
 			Log.i(TAG, "delete find update log, guid= " + guId);
 			success = logFindHistory(guId, "delete");
 		}
-		if (success) 
-			success = deletePhotosById(id);
-		if (success) {
-			Log.i(TAG, "deleteFind " + id + " deleted photos");
-		}
+		
+//		if (success) 
+//			success = deletePhotosById(id);
+//		if (success) {
+//			Log.i(TAG, "deleteFind " + id + " deleted photos");
+//		}
 		
 		return success;
 	}
@@ -624,7 +625,8 @@ public class PositDbHelper extends SQLiteOpenHelper {
 		success = mDb.delete(PHOTOS_TABLE, PHOTOS_FIND_ID + "=" + id, null) > 0;
 		c.close();
 		mDb.close();
-		return success;
+		Log.i(TAG, "deletePHotosById " + id + " deleting photos, success = " + success);
+		return success;  
 	}
 	
 	/**
