@@ -274,8 +274,6 @@ public class PositMain extends Activity implements OnClickListener,
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		int trackerState = sp
-				.getInt(BackgroundTrackerActivity.SHARED_STATE, -1);
 		/*
 		 * TODO should be more like
 		 * "is RWG running and is RWG enabled in the settings" /* if
