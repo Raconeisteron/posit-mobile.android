@@ -223,7 +223,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			if (result != null) {
 				String[] message = result.split(":");
 				if (message.length != 2) {
-					Utils.showToast(this, "Malformed message");
+					Utils.showToast(this, "Error: " + result);
 					break;
 				}
 				// A new account has successfully been created.
@@ -397,18 +397,25 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		String imei = manager.getDeviceId();
 
 		// First login the user.
-		String result = com.loginUser(serverName, email, password, imei);
+		String result = null;
+		try {
+			result = com.loginUser(serverName, email, password, imei);
+		} catch (Exception e) {
+			Log.i(TAG, "Exception " + e.getMessage());
+		}
 
 		Log.i(TAG, "loginUser result: " + result);
 		String authKey;
 		if (null==result){
 			Utils.showToast(this, "Failed to get authentication key from server.");
+			mProgressDialog.dismiss();
 			return;
 		}
 		//TODO this is still little uglyish
 		String[] message = result.split(":");
-		if (message.length != 2){
-			Utils.showToast(this, "Malformed message");
+		if (message.length != 2  || message[1].equals("null")){
+			Utils.showToast(this, "Login failed: " + message);
+			mProgressDialog.dismiss();
 			return;
 		}
 		// Successfully logged in
