@@ -1,5 +1,5 @@
 /*
- * File: ServerRegistrationActivity.java
+ * File: RegisterPhoneActivity.java
  * 
  * Copyright (C) 2009 The Humanitarian FOSS Project (http://www.hfoss.org)
  * 
@@ -19,7 +19,7 @@
  * if not visit http://www.gnu.org/licenses/lgpl.html.
  * 
  */
-
+  
 package org.hfoss.posit.android;
 
 import java.util.List;
@@ -62,18 +62,21 @@ import android.widget.TextView;
  */
 public class RegisterPhoneActivity extends Activity implements OnClickListener {
 
-	private static final int BARCODE_READER = 0;
+	private static final int LOGIN_BY_BARCODE_READER = 0;
+	private static final int LOGIN_BY_EMAIL_PASSWORD = 1;
+
 	private static final String TAG = "RegisterPhoneActivity";
-	private static final int CREATE_ACCOUNT = 1;
 	public boolean isSandbox = false;
 	public boolean readerInstalled = false;
-	private Button registerUserButton;
-	private Button editServer;
+//	private Button registerUserButton;
+//	private Button editServer;
 	private Button registerUsingBarcodeButton;
 	private Button registerDeviceButton;
-	private SharedPreferences sp;
+	private SharedPreferences mSharedPrefs;
 	private ProgressDialog mProgressDialog;
-	private Dialog mServerDialog;
+//	private Dialog mServerDialog;
+	private String mServerName;
+	
 	/**
 	 * Called when the Activity is first started. If the phone is not
 	 * registered, tells the user so and gives the user instructions on how to
@@ -84,20 +87,25 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-
-		sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		mServerDialog = new Dialog(this);
-		String server = sp.getString("SERVER_ADDRESS", null);
-		String email = sp.getString("EMAIL", null);
-		
+  
 		setContentView(R.layout.registerphone);
+
+		mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mServerName = mSharedPrefs.getString("SERVER_ADDRESS", "");
+		Log.i(TAG,"Server = " + mServerName);
+//		if (mServerName != null) 
+		((TextView) findViewById(R.id.serverName)).setText(mServerName);
+		
+//		mServerDialog = new Dialog(this);
+//		String server = sp.getString("SERVER_ADDRESS", null);
+//		mServerName = sp.getString("SERVER_ADDRESS", "http://turing.cs.trincoll.edu/~pgautam/positweb");
+
+		String email = mSharedPrefs.getString("EMAIL", "");
+		((TextView) findViewById(R.id.email)).setText(email);
+
 					
-		if (server != null) 
-			((TextView) findViewById(R.id.serverName)).setText(server);
-		if(email != null)
-			((TextView) findViewById(R.id.email)).setText(email);
+//		if(email != null)
+		
 		if (isIntentAvailable(this, "com.google.zxing.client.android.SCAN")) {
 			readerInstalled = true;
 		}
@@ -105,23 +113,23 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 		Intent regI = getIntent();
 		if(regI.getBooleanExtra("regUser", false)&&!regI.getBooleanExtra("regComplete", false)){
 			Intent i = new Intent(this, RegisterUserActivity.class);
-			i.putExtra("server", (((TextView) findViewById(R.id.serverName))
-					.getText()).toString());
+//			i.putExtra("server", (((TextView) findViewById(R.id.serverName))
+//					.getText()).toString());
 			i.putExtra("email", (((TextView) findViewById(R.id.email))
 					.getText()).toString());
 			regI.putExtra("regComplete", true);
-			this.startActivityForResult(i, CREATE_ACCOUNT);
+			this.startActivityForResult(i, LOGIN_BY_EMAIL_PASSWORD);
 		}
 
-		registerUserButton = (Button) findViewById(R.id.createaccount);
-		editServer = (Button) findViewById(R.id.editServer);
+//		registerUserButton = (Button) findViewById(R.id.createaccount);
+//		editServer = (Button) findViewById(R.id.editServer);
 		registerUsingBarcodeButton = (Button) findViewById(R.id.registerUsingBarcodeButton);
 		registerDeviceButton = (Button) findViewById(R.id.registerDeviceButton);
 
-		editServer.setOnClickListener(this);
+//		editServer.setOnClickListener(this);
 		registerUsingBarcodeButton.setOnClickListener(this);
 		registerDeviceButton.setOnClickListener(this);
-		registerUserButton.setOnClickListener(this);
+//		registerUserButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -162,7 +170,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 	 * preferences. The user is then prompted to choose a project from the
 	 * server to work on and sync with.
 	 */
-	@Override
+	@Override 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_CANCELED)
@@ -172,8 +180,10 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 			return;
 		}
 		switch (requestCode) {
-		case BARCODE_READER:
+		case LOGIN_BY_BARCODE_READER:
 			String value = data.getStringExtra("SCAN_RESULT");
+			Log.i(TAG,"Bar code scanner result " + value);
+			
 			// Hack to remove extra escape characters from JSON text.
 			StringBuffer sb = new StringBuffer("");
 			for (int k = 0; k < value.length(); k++) {
@@ -186,6 +196,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 			}
 			value = sb.toString(); // Valid JSON encoded string
 			// End of Hack
+			
 			JSONObject object;
 			JSONTokener tokener = new JSONTokener(value);
 
@@ -204,14 +215,18 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				mProgressDialog = ProgressDialog.show(this, "Registering device",
 						"Please wait.", true, true);
 				try {
-					String registered = communicator.registerDevice(server,
-							authKey, imei);
+					String registered = communicator.registerDevice(server, authKey, imei);
 
 					if (registered != null) {
-						Editor spEditor = sp.edit();
+						Editor spEditor = mSharedPrefs.edit();
+
 
 						spEditor.putString("SERVER_ADDRESS", server);
 						spEditor.putString("AUTHKEY", authKey);
+						spEditor.putInt("PROJECT_ID", 0);
+//						spEditor.putString("EMAIL", email);      // Should be in barcode?
+						spEditor.putString("PASSWORD", password);
+						spEditor.putString("PROJECT_NAME", "");
 						spEditor.commit();
 						
 						Intent intent = new Intent(this, ShowProjectsActivity.class);
@@ -222,7 +237,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				}
 
 				mProgressDialog.dismiss();
-				int projectId = sp.getInt("PROJECT_ID", 0);
+				int projectId = mSharedPrefs.getInt("PROJECT_ID", 0);
 				if (projectId == 0) {
 					Intent intent = new Intent(this, ShowProjectsActivity.class);
 					startActivity(intent);
@@ -234,12 +249,13 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 					Log.e(TAG, e.toString());
 			}
 			break;
-		case CREATE_ACCOUNT:
+		case LOGIN_BY_EMAIL_PASSWORD:
 			String email = data.getStringExtra("email");
 			String password = data.getStringExtra("password");
-			String serverName = (((TextView) findViewById(R.id.serverName))
-					.getText()).toString();
-			loginUser(serverName, email, password);
+//			String serverName = (((TextView) findViewById(R.id.serverName))
+//					.getText()).toString();
+//			loginUser(serverName, email, password);
+			loginUser(mServerName, email, password);  
 			break;
 		}
 	}
@@ -251,41 +267,41 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		
 		
-		String serverName = (((TextView) findViewById(R.id.serverName))
-				.getText()).toString();
+//		String serverName = (((TextView) findViewById(R.id.serverName))
+//				.getText()).toString();
 		EmailValidator emV = EmailValidator.getInstance();
 		UrlValidator urV = new UrlValidator();
 
 		switch (v.getId()) {
 		
-		case R.id.editServer:
-			mServerDialog.setContentView(R.layout.edit_server_dialog);
-			mServerDialog.setTitle("Change Server");
-			TextView text = (TextView) mServerDialog.findViewById(R.id.editServerMessage);
-			text.setText("Please enter the name of the server");
-			EditText eText = (EditText) mServerDialog.findViewById(R.id.newServer);
-			eText.setText("http://");
-			Button blar = (Button) mServerDialog.findViewById(R.id.confirmChange);
-			blar.setOnClickListener(this);
-			mServerDialog.show();
-			break;
-		case R.id.confirmChange:
-			String server = ((EditText) mServerDialog.findViewById(R.id.newServer)).getText().toString();
-			((TextView) this.findViewById(R.id.serverName)).setText(server);
-			Editor editor = sp.edit();
-			editor.putString("SERVER_ADDRESS", server);
-			editor.commit();
-			mServerDialog.dismiss();
-			break;			
+//		case R.id.editServer:
+//			mServerDialog.setContentView(R.layout.edit_server_dialog);
+//			mServerDialog.setTitle("Change Server");
+//			TextView text = (TextView) mServerDialog.findViewById(R.id.editServerMessage);
+//			text.setText("Please enter the name of the server");
+//			EditText eText = (EditText) mServerDialog.findViewById(R.id.newServer);
+//			eText.setText("http://");
+//			Button blar = (Button) mServerDialog.findViewById(R.id.confirmChange);
+//			blar.setOnClickListener(this);
+//			mServerDialog.show();
+//			break;
+//		case R.id.confirmChange:
+//			String server = ((EditText) mServerDialog.findViewById(R.id.newServer)).getText().toString();
+//			((TextView) this.findViewById(R.id.serverName)).setText(server);
+//			Editor editor = sp.edit();
+//			editor.putString("SERVER_ADDRESS", server);
+//			editor.commit();
+//			mServerDialog.dismiss();
+//			break;			
 		case R.id.registerDeviceButton:
 			String password = (((TextView) findViewById(R.id.password))
 					.getText()).toString();
 			String email = (((TextView) findViewById(R.id.email)).getText())
 					.toString();
 
-			if (urV.isValid(serverName) != true) {
-				Utils.showToast(this, "Please enter a valid server URL");
-			}
+//			if (urV.isValid(serverName) != true) {
+//				Utils.showToast(this, "Please enter a valid server URL");
+//			}
 			if (password.equals("") || email.equals("")) {
 				Utils.showToast(this, "Please fill in all the fields");
 				break;
@@ -295,7 +311,8 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				break;
 			}
 			
-			loginUser(serverName,email, password);
+//			loginUser(serverName,email, password);
+			loginUser(mServerName,email, password);
 			
 			
 			break;
@@ -319,7 +336,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 				Intent intent = new Intent(
 						"com.google.zxing.client.android.SCAN");
 				try {
-					startActivityForResult(intent, BARCODE_READER);
+					startActivityForResult(intent, LOGIN_BY_BARCODE_READER);
 				} catch (ActivityNotFoundException e) {
 					if (Utils.debug)
 						Log.i(TAG, e.toString());
@@ -328,19 +345,19 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 
 			break;
 
-		case (R.id.createaccount):
-
-			if (urV.isValid(serverName) != true) {
-				Utils.showToast(this, "Please enter a valid server URL");
-				break;
-			}
-			Intent i = new Intent(this, RegisterUserActivity.class);
-			i.putExtra("server", (((TextView) findViewById(R.id.serverName))
-					.getText()).toString());
-			i.putExtra("email", (((TextView) findViewById(R.id.email))
-					.getText()).toString());
-			this.startActivityForResult(i, CREATE_ACCOUNT);
-			break;
+//		case (R.id.createaccount):
+//
+////			if (urV.isValid(serverName) != true) {
+////				Utils.showToast(this, "Please enter a valid server URL");
+////				break;
+////			}
+//			Intent i = new Intent(this, RegisterUserActivity.class);
+//			i.putExtra("server", (((TextView) findViewById(R.id.serverName))
+//					.getText()).toString());
+//			i.putExtra("email", (((TextView) findViewById(R.id.email))
+//					.getText()).toString());
+//			this.startActivityForResult(i, CREATE_ACCOUNT);
+//			break;
 
 		}
 
@@ -362,7 +379,7 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 
 		
 		String result = com.loginUser(serverName, email, password, imei);
-		
+		Log.i(TAG, "loginUser result: " + result);
 		String authKey;
 		if (null==result){
 			Utils.showToast(this, "Failed to get authentication key from server.");
@@ -381,14 +398,18 @@ public class RegisterPhoneActivity extends Activity implements OnClickListener {
 			Log.i(TAG, "AuthKey "+ authKey +" obtained, registering device");
 			String responseString = com.registerDevice(serverName, authKey, imei);
 			if (responseString.equals("true")){
-				Editor spEditor = sp.edit();
+				Editor spEditor = mSharedPrefs.edit();
 				spEditor.putInt("PROJECT_ID", 0);
 				spEditor.putString("SERVER_ADDRESS", serverName);
 				spEditor.putString("EMAIL", email);
 				spEditor.putString("PASSWORD", password);
 				spEditor.putString("AUTHKEY", authKey);
-				spEditor.putString("PROJECT_NAME", "");
+				spEditor.putString("PROJECT_NAME", ""); 
 				spEditor.commit();
+				
+				Intent intent = new Intent(this, ShowProjectsActivity.class);
+				startActivity(intent);
+				
 				Utils.showToast(this, "Successfully logged in.");
 				setResult(PositMain.LOGIN_SUCCESSFUL);
 				finish();

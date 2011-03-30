@@ -34,14 +34,8 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.widget.EditText;
 
 /**
- * Offers the user various options on how things should work in POSIT. The user
- * can choose whether or not they want automatic syncing to be on and whether
- * they want notifications about syncing. The user can also register their phone
- * from this screen in case they need to register with a different web server.
- * Lastly, the user can also set their group size should they need to be in ad
- * hoc mode.
- * 
- * 
+ * Allows the user to change the server or project or login as a different user or
+ * create a new user account.
  */
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceClickListener, OnSharedPreferenceChangeListener {
 	private static final String TAG = "SettingsActivity";
@@ -50,7 +44,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	private Preference serverAddress;
 	private Preference project;
 	private Preference user;
-
+ 
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -60,6 +54,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		
 		server = sp.getString("SERVER_ADDRESS", "");
 		String email = sp.getString("EMAIL","");
+		
 		String projectName = sp.getString("PROJECT_NAME","");
 		
 		Preference regUser = this.findPreference("regUser");
@@ -83,34 +78,41 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			
 		regUser.setOnPreferenceClickListener(this);
 		regDevice.setOnPreferenceClickListener(this);
+
+		Log.i(TAG, "Email = " + email );
+
 	}
 	
 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
+		Log.i(TAG, "Email = " );
 
-		if(preference.getTitle().toString().equals("Add a phone")){
-			Intent i = new Intent(this, RegisterPhoneActivity.class);
-			startActivity(i);
-		}
-		if(preference.getTitle().toString().equals("Create an account")){
-			Intent intent = new Intent(this, RegisterPhoneActivity.class);
-			intent.setClass(this, RegisterPhoneActivity.class);
-			intent.putExtra("regUser", true);
+		if(preference.getTitle().toString().equals("Register this device")){
+			//Intent i = new Intent(this, RegisterPhoneActivity.class);
+			Intent intent = new Intent(this, RegisterActivity.class);
+			intent.setAction(RegisterActivity.REGISTER_PHONE);
 			startActivity(intent);
 		}
-		if(preference.getTitle().toString().equals("Current server")){
+		if(preference.getTitle().toString().equals("Create an account")){
+			Intent intent = new Intent(this, RegisterActivity.class);
+			//Intent intent = new Intent(this, RegisterPhoneActivity.class);
+			//intent.setClass(this, RegisterPhoneActivity.class);
+			intent.setAction(RegisterActivity.REGISTER_USER);
+			startActivity(intent);
+		}
+		if(preference.getTitle().toString().equals("Change current server")){
 			if (preference instanceof EditTextPreference) {
 				EditTextPreference textPreference = (EditTextPreference) preference;
 				EditText eText =  textPreference.getEditText();
 				eText.setText(server);
 			}
 		}
-		if(preference.getTitle().toString().equals("Current user")){
-			Intent i = new Intent(this, RegisterPhoneActivity.class);
-			startActivity(i);
-		}
-		if(preference.getTitle().toString().equals("Current project")){
+//		if(preference.getTitle().toString().equals("Login")){
+//			Intent i = new Intent(this, RegisterPhoneActivity.class);
+//			startActivity(i);
+//		}
+		if(preference.getTitle().toString().equals("Change current project")){
 			Intent i = new Intent(this, ShowProjectsActivity.class);
 			startActivity(i);
 		}
