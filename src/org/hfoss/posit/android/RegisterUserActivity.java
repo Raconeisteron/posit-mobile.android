@@ -85,8 +85,8 @@ public class RegisterUserActivity extends Activity implements OnClickListener {
 		((TextView) findViewById(R.id.serverName)).setText(server);
 		((TextView) findViewById(R.id.email)).setText(email);
 		mServerDialog = new Dialog(this);
-		editServer = (Button) findViewById(R.id.editServer);
-		editServer.setOnClickListener(this);
+//		editServer = (Button) findViewById(R.id.editServer);
+//		editServer.setOnClickListener(this);
 		
 		registerButton = (Button) findViewById(R.id.submitInfo);
 		registerButton.setOnClickListener(this);
@@ -165,7 +165,8 @@ public class RegisterUserActivity extends Activity implements OnClickListener {
 					.getSystemService(Context.TELEPHONY_SERVICE);
 			String imei = manager.getDeviceId();
 
-			Communicator com = new Communicator(registerButton.getContext());
+			//Communicator com = new Communicator(registerButton.getContext());
+			Communicator com = new Communicator(this);
 
 			String result = com.registerUser(server, firstname, lastname,
 					email, password, check, imei);
@@ -177,8 +178,8 @@ public class RegisterUserActivity extends Activity implements OnClickListener {
 					break;
 				}
 				if (message[0].equals("" + Constants.AUTHN_OK)) {
-					mProgressDialog = ProgressDialog.show(this, "Registering device",
-							"Please wait.", true, true);
+//					mProgressDialog = ProgressDialog.show(this, "Registering device",
+//							"Please wait.", true, true);
 					Intent data = new Intent();
 					data.putExtra("email", email);
 					data.putExtra("password", password);

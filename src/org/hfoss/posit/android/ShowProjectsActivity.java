@@ -183,7 +183,7 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 		switch (id) {
 		case CONFIRM_PROJECT_CHANGE:
 			return new AlertDialog.Builder(this)
-			.setIcon(R.drawable.alert_dialog_icon)
+			.setIcon(R.drawable.icon)
 			.setTitle("You have changed your project to: " 
 					+ (String) projectList.get(mClickedPosition).get("name"))
 					.setPositiveButton(R.string.alert_dialog_ok, 
@@ -201,7 +201,6 @@ public class ShowProjectsActivity extends ListActivity implements OnClickListene
 							finish();
 						}
 					}).create();
-
 		default:
 			return null;
 		}

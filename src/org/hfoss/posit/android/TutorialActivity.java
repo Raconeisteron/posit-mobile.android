@@ -1,3 +1,25 @@
+/*
+ * File: TutorialActivity.java
+ * 
+ * Copyright (C) 2009 The Humanitarian FOSS Project (http://www.hfoss.org)
+ * 
+ * This file is part of POSIT, Portable Open Search and Identification Tool.
+ *
+ * POSIT is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL) as published 
+ * by the Free Software Foundation; either version 3.0 of the License, or (at
+ * your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU LGPL along with this program; 
+ * if not visit http://www.gnu.org/licenses/lgpl.html.
+ * 
+ */
+
 package org.hfoss.posit.android;
 
 import android.app.Activity;
@@ -20,6 +42,7 @@ import android.widget.EditText;
 
 public class TutorialActivity extends Activity implements OnClickListener {
 
+	public static String TAG = "TutorialActivity";
 	private int pageNumber;
 	private WebView mWebView;
 	private Button next;
@@ -33,6 +56,7 @@ public class TutorialActivity extends Activity implements OnClickListener {
 	 * accompanying buttons.
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i(TAG, "Creating the tutorial");
 		super.onCreate(savedInstanceState);
 		mWebView = new WebView(this);
 		setContentView(R.layout.tutorial_view);
@@ -90,8 +114,7 @@ public class TutorialActivity extends Activity implements OnClickListener {
 	 */
 	@Override
 	public void onClick(View v) {
-		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor mEdit = sp.edit();
 		switch (v.getId()) {
 		case (R.id.skipButton):

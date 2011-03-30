@@ -1,99 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
- <LinearLayout 
-    android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-     <TextView 
-		android:id="@+id/registerDeviceTitle"
-		android:text="@string/registerDeviceTitle"
-		android:textSize="15.5sp"
-		android:textColor="#FFF"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="left"
-		android:layout_marginBottom="10dp"
-		android:visibility="visible"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="vertical">
+		<TextView android:id="@+id/byPhone" android:text="Login from the phone"
+			android:textSize="17.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="10dp"
+			android:visibility="visible" />
 
-  	
-	<EditText
-        android:id="@+id/email"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:inputType="textEmailAddress|textAutoComplete"
-        android:imeOptions="flagNoExtractUi"
-        android:hint="Email"
-	/>
-	
-	<EditText
-        android:id="@+id/password"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:password="true"
-        android:inputType="textPassword"
-        android:hint="Password"/>
+		<TextView android:id="@+id/registerDeviceTitle" android:text="@string/registerDeviceTitle"
+			android:textSize="14.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="10dp"
+			android:visibility="visible" />
 
+		<TextView android:id="@+id/serverLabel" android:layout_width="fill_parent"
+			android:layout_height="20dp" android:textSize="14.5sp" android:text="@string/serverLabel" />
 
-	<TextView
-   	     android:id="@+id/serverLabel"
-       	 android:layout_width="fill_parent"
-    	 android:layout_height="20dp"
-       	 android:textSize="14.5sp"
-       	 android:text="@string/serverLabel"/>  
-	<TextView
-   	     android:id="@+id/serverName"
-       	 android:layout_width="fill_parent"
-    	 android:layout_height="20dp"
-       	 android:textSize="14.5sp"
-       	 android:text="@string/defaultServer"/>         	 
-        	      
+		<TextView android:id="@+id/serverName" android:layout_width="fill_parent"
+			android:layout_height="20dp" android:textSize="14.5sp"
+			android:layout_marginBottom="20dp" android:text="@string/defaultServer" />
 
+		<EditText android:id="@+id/email" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:inputType="textEmailAddress|textAutoComplete"
+			android:imeOptions="flagNoExtractUi" android:hint="Email" />
 
+		<EditText android:id="@+id/password" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:password="true" android:inputType="textPassword"
+			android:hint="Password" />
 
-	       
+		<Button android:id="@+id/registerDeviceButton"
+			android:layout_width="150dp" android:layout_height="40dp"
+			android:layout_gravity="center" 
+			android:text="@string/login" android:layout_alignParentRight="true" />
 
- <RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal">
-    
-    	<Button 
-		android:id="@+id/registerDeviceButton" 
-   		android:layout_width="100dp"
-    	android:layout_height="50dp"
-		android:text="@string/login" 
-		android:layout_alignParentRight="true"/>
+		<View android:id="@+id/divider" android:background="@drawable/black_white_gradient"
+			android:layout_marginBottom="10dp"  android:layout_marginTop="10dp"
+			android:layout_width="fill_parent" android:layout_height="1dp" />
 
- 
- 		 <Button 
- 		 	android:id="@+id/editServer"
- 			android:layout_width="100dp"
-		   	android:layout_height="50dp"
-			android:layout_below="@+id/createaccount"
-   			android:layout_alignParentLeft="true"
-			android:text="@string/editServer" />	  
-      
-		<Button 
-			android:id="@+id/registerUsingBarcodeButton" 
-   			android:layout_width="120dp"
-    		android:layout_height="50dp"
-			android:text="Register with Barcode"
+		<TextView android:id="@+id/byBarcdoe" android:text="Register online"
+			android:textSize="17.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="10dp"
+			android:visibility="visible" />
+
+		<TextView android:id="@+id/registerByBarcode" android:text="@string/registerByBarcode"
+			android:textSize="15.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="10dp"
+			android:visibility="visible" />
+
+		<Button android:id="@+id/registerUsingBarcodeButton"
+			android:layout_width="150dp" android:layout_height="40dp"
+			android:layout_gravity="center" android:text="Register by Barcode"
 			android:layout_toRightOf="@+id/editServer" />
-			
-				 	<Button android:id="@+id/createaccount"
-	    		android:layout_width="150dp"
-		    	android:layout_height="40dp"
-		    	android:layout_gravity="left"
-		    	android:text="Create Account"
-		    	android:visibility="gone"/>	
-		</RelativeLayout>	   
-	
+
 	</LinearLayout>
 
 </ScrollView>
+
+	<!--
+
+		<TextView android:id="@+id/serverLabel"
+		android:layout_width="fill_parent" android:layout_height="20dp"
+		android:textSize="15.5sp" android:text="@string/serverLabel"/>
+		<TextView android:id="@+id/serverName"
+		android:layout_width="fill_parent" android:layout_height="20dp"
+		android:textSize="15.5sp" android:text="@string/defaultServer"/>
+
+		<Button android:id="@+id/editServer" android:layout_width="150dp"
+		android:layout_height="40dp" android:layout_below="@+id/createaccount"
+		android:layout_alignParentLeft="true"
+		android:text="@string/editServer" />
+	-->

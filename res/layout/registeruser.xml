@@ -1,107 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-<LinearLayout
- 
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="vertical">
 
-     <TextView 
-		android:id="@+id/registerUserTitle"
-		android:text="@string/registerUserTitle"
-		android:textSize="15.5sp"
-		android:textColor="#FFF"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="left"
-		android:layout_marginBottom="10dp"
-		android:visibility="visible"/>
+		<TextView android:id="@+id/byPhone" android:text="Create new account"
+			android:textSize="17.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="10dp"
+			android:visibility="visible" />
 
+		<TextView android:id="@+id/registerUserTitle" android:text="@string/registerUserTitle"
+			android:textSize="14.5sp" android:textColor="#FFF"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" android:layout_marginBottom="20dp"
+			android:visibility="visible" />
 
+		<TextView android:id="@+id/serverLabel" android:layout_width="fill_parent"
+			android:layout_height="20dp" android:textSize="14.5sp" android:text="@string/serverLabel" />
 
-	<EditText
-        android:id="@+id/firstName"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
- 		android:inputType ="textCapSentences"
- 		android:hint="@string/firstNameLabelText"/>
-	
-	  
+		<TextView android:id="@+id/serverName" android:layout_width="fill_parent"
+			android:layout_height="20dp" android:textSize="14.5sp"
+			android:layout_marginBottom="20dp" android:text="@string/defaultServer" />
 
-	<EditText
-        android:id="@+id/lastName"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:inputType ="textCapSentences"
-        android:hint="@string/lastNameLabelText"/>
-	
+		<EditText android:id="@+id/firstName" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:inputType="textCapSentences" android:hint="@string/firstNameLabelText" />
 
-	<EditText
-        android:id="@+id/email"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:inputType="textEmailAddress"
-        android:imeOptions="actionNext"
-        android:hint="@string/emailLabelText"
-        />
-	
-	<EditText
-        android:id="@+id/password"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:password="true"
-        android:imeOptions="actionNext"
-        android:hint="@string/passwordLabelText"/>
-        
+		<EditText android:id="@+id/lastName" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:inputType="textCapSentences" android:hint="@string/lastNameLabelText" />
 
-	<EditText
-        android:id="@+id/passCheck"
-        android:layout_height="40dp"
-        android:layout_width="fill_parent"
-        android:layout_gravity="fill_horizontal"
-        android:password="true"
-        android:hint="@string/passCheckLabelText"/>
-        
-	<TextView
-   	     android:id="@+id/serverLabel"
-       	 android:layout_width="fill_parent"
-    	 android:layout_height="20dp"
-       	 android:textSize="14.5sp"
-       	 android:text="@string/serverLabel"/>  
-       	 
-	<TextView
-   	     android:id="@+id/serverName"
-       	 android:layout_width="fill_parent"
-    	 android:layout_height="20dp"
-       	 android:textSize="14.5sp"
-       	 android:text="@string/defaultServer"/> 
-       	 
-  <RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">      	 
-      
- <Button android:id="@+id/submitInfo"
-    android:layout_width="150dp"
-    android:layout_height="40dp"
-    android:layout_gravity="left"
-    android:text="Create Account" />
-  
+		<EditText android:id="@+id/email" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:inputType="textEmailAddress" android:imeOptions="actionNext"
+			android:hint="@string/emailLabelText" />
+
+		<EditText android:id="@+id/password" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:password="true" android:imeOptions="actionNext"
+			android:hint="@string/passwordLabelText" />
+
+		<EditText android:id="@+id/passCheck" android:layout_height="40dp"
+			android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+			android:password="true" android:hint="@string/passCheckLabelText" />
+
+		<Button android:id="@+id/submitInfo" android:layout_width="150dp"
+			android:layout_height="40dp" android:layout_gravity="center"
+			android:text="Create Account" />
+
+	</LinearLayout>
+</ScrollView>
+
+<!--  
  <Button 
  	android:id="@+id/editServer"
  	android:layout_width="150dp"
 	android:layout_height="40dp"
 	android:layout_toRightOf="@id/submitInfo"
 	android:text="@string/editServer" />
-</RelativeLayout>	  
-		
-
-	</LinearLayout>
-</ScrollView>
+ -->

@@ -2,20 +2,25 @@
 	<!-- Application name and the Strings seen in the PositMain -->
 	<string name="app_name">POSIT</string>
 	<string name="version">0.7.2 beta</string>
+	
+	<string name="defaultServer">http://turing.cs.trincoll.edu/~pgautam/positweb</string>
+
 	<string name="confirmChange">Confirm</string>
 	<string name="accountNotFoundMessage">Your email or username is incorrect</string>
 	<string name="projectNameLabel">Project Name:</string>
-	<string name="prefDevice">Login</string>
+	<string name="prefDevice">Register this device</string>
 	<string name="prefUser">Create an account</string>
-	<string name="registerDeviceTitle">Login and add this phone to your account on the server</string>
-	<string name="registerUserTitle">Create an account on the server and login</string>
+	<string name="registerDeviceTitle">Login to an existing account on the POSIT server and register this phone.</string>
+	<string name="registerByBarcode">You can also register by Barcode Reader.  Login to the server and select Settings > Register a device.</string>
+	<string name="registerUserTitle">Create a new account on the POSIT server. You can also do
+	this on the server.</string>
 	<string name="projectDescriptionLabel">Project Description:</string>
 	<string name="createProjectButton">Create Project</string>
 	<string name="editServer">Change Server</string>
-	<string name="serverLabel">Current Server:</string>
-	<string name="currProjectLabel">Current project</string>
+	<string name="serverLabel">Server:</string>
+	<string name="serverPrefLabel">Change current server</string>
+	<string name="currProjectLabel">Change current project</string>
 	<string name="currUserLabel">Current user</string>
-	<string name="defaultServer">http://posit-project.org/sandbox</string>	
 	<string name="finishButton">Finish</string>
 	<string name="skipButton">Skip</string>
 	<string name="nextButton">Next</string>
@@ -178,7 +183,6 @@
 	<string name="date_time_label">Date and Time</string>
 	<string name="settings">Settings</string>
 	<string name="barcodeText">Read Barcode</string>
-	<string name="serverPrefLabel">Current server</string>
 
 
 	<!-- Related to Configuration -->

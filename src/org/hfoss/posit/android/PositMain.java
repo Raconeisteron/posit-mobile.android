@@ -21,6 +21,7 @@
  */
 package org.hfoss.posit.android;
 
+import org.apache.oro.text.regex.Util;
 import org.hfoss.posit.android.adhoc.RWGConstants;
 import org.hfoss.posit.android.adhoc.RWGService;
 import org.hfoss.posit.android.utilities.Utils;
@@ -33,6 +34,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -49,16 +51,20 @@ import android.widget.ImageButton;
  * Implements the main activity and the main screen for the POSIT application.
  */
 public class PositMain extends Activity implements OnClickListener,
-		RWGConstants {
+RWGConstants {
+
+	private static final String TAG = "PositMain";
 
 	private static final int CONFIRM_EXIT = 0;
-	private static final String TAG = "PositMain";
-	private static final int LOGIN_ACTIVITY = 1;
+
 	public static final int LOGIN_CANCELED = 3;
 	public static final int LOGIN_SUCCESSFUL = 4;
-	private static final int REGISTRATION_CANCELLED = 5;
 	private static final int REGISTRATION_ACTIVITY = 11;
-	private SharedPreferences sp;
+
+	private SharedPreferences mSharedPrefs;
+	private Editor mSpEditor;
+
+	private String mAuthKey;
 	// public static AdhocClient mAdhocClient;
 	public static WifiManager wifiManager;
 	public RWGService rwgService;
@@ -73,147 +79,121 @@ public class PositMain extends Activity implements OnClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// TODO has to be enabled only if SharedPreference says so or a similar
-		// version of that
-		// rwgService =new RWGService();
+		Log.i(TAG,"Creating");
 
-		sp = PreferenceManager.getDefaultSharedPreferences(this);
+		// A newly installed POSIT should have no shared prefs
+		mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mSpEditor = mSharedPrefs.edit();
+		Log.i(TAG, "Preferences= " + mSharedPrefs.getAll().toString());
+
+		// If this is a new install, we need to set up the Server
+		if (mSharedPrefs.getString("SERVER_ADDRESS", "").equals("")) {
+			mSpEditor.putString("SERVER_ADDRESS", getString(R.string.defaultServer));
+			mSpEditor.commit();
+		}
 
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		if (!sp.getBoolean("tutorialComplete", false)) {
+		// Give the user the tutorial if they haven't yet had it. 
+		if (!mSharedPrefs.getBoolean("tutorialComplete", false)) {
 			Intent i = new Intent(this, TutorialActivity.class);
 			startActivity(i);
-		} else {
-			if (!checkPhoneRegistrationAndInitialSync()) {
-				Intent i = new Intent(this, RegisterActivity.class);
-				startActivityForResult(i, REGISTRATION_ACTIVITY);
-			} else {
-				setContentView(R.layout.main);
+		}  else 
+			startPOSIT();
 
-				final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-				if (addFindButton != null)
-					addFindButton.setOnClickListener(this);
-
-				final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-				if (listFindButton != null) {
-					// Log.i(TAG, listFindButton.getText() + "");
-					listFindButton.setOnClickListener(this);
-				}
-			}
-			sp = PreferenceManager.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = sp.edit();
-
-			editor.putString("PROJECT_NAME", "");
-			Log.i(TAG, "onCreate(), Preferences= " + sp.getAll().toString());
-
-			// NOTE: If the shared preferences get left in a state with the
-			// Tracker's not set to IDLE,
-			// it will be impossible to start the Tracker. To do so, use the
-			// statements here to reset
-			// Tracker State to IDLE.
-			// This is an area that could use a better algorithm based on
-			// Android's
-			// life cycle.
-			// editor.putInt(BackgroundTrackerActivity.SHARED_STATE,
-			// BackgroundTrackerActivity.IDLE);
-			// editor.commit();
-
-			// If this is the first run on this device, let the user register
-			// the
-			// phone.
-
-			Utils.showToast(this, "Current Project: "
-					+ sp.getString("PROJECT_NAME", ""));
-
-			/*      ******* POLICY: RWG should not be running at start up */
-
-			// if (RWGService.isRunning()) {
-			// Log.i(TAG, "RWG running");
-			// Utils.showToast(this, "RWG running");
-			// }
-		}
-
+		Utils.showToast(this, "Server: "  + mSharedPrefs.getString("SERVER_ADDRESS", ""));
 	}
 
-	public void OnResume() {
+
+	/**
+	 * When POSIT starts it should either display a Registration View, if the 
+	 * phone is not registered with a POSIT server, or it should display the 
+	 * main View (ListFinds, AddFinds).  This helper method is called in various
+	 * places in the Android, including in onCreate() and onRestart(). 
+	 */
+	private void startPOSIT() {
+		// If the phone has no valid AUTH_KEY, it has to be registered with a server 
+
+		mAuthKey = mSharedPrefs.getString("AUTHKEY", "");
+		if (mAuthKey.equals("") || mAuthKey.equals(null)) {
+			Intent i = new Intent(this, RegisterActivity.class);
+			startActivityForResult(i, REGISTRATION_ACTIVITY);
+			
+		} else {    // Otherwise display the PositMain View
+			setContentView(R.layout.main);
+
+			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
+			if (addFindButton != null)
+				addFindButton.setOnClickListener(this);
+
+			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
+			if (listFindButton != null) {
+				// Log.i(TAG, listFindButton.getText() + "");
+				listFindButton.setOnClickListener(this);
+			}
+		}
+	}
+
+	// Lifecycle methods just generate Log entries to help debug and understand flow
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.i(TAG,"Pausing");
+	}
+
+	@Override
+	protected void onResume() {
 		super.onResume();
-		if (!checkPhoneRegistrationAndInitialSync()) {
-			Intent i = new Intent(this, RegisterActivity.class);
-			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		} else {
-			setContentView(R.layout.main);
-
-			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-			if (addFindButton != null)
-				addFindButton.setOnClickListener(this);
-
-			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-			if (listFindButton != null) {
-				// Log.i(TAG, listFindButton.getText() + "");
-				listFindButton.setOnClickListener(this);
-			}
-		}
+		Log.i(TAG,"Resuming");
 	}
 
-	public void onRestart() {
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.i(TAG,"Starting");
+	}
+
+	@Override
+	protected void onRestart() {
 		super.onRestart();
-		if (!checkPhoneRegistrationAndInitialSync()) {
-			Intent i = new Intent(this, RegisterActivity.class);
-			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		} else {
-			setContentView(R.layout.main);
-
-			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-			if (addFindButton != null)
-				addFindButton.setOnClickListener(this);
-
-			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-			if (listFindButton != null) {
-				// Log.i(TAG, listFindButton.getText() + "");
-				listFindButton.setOnClickListener(this);
-			}
-		}
+		Log.i(TAG,"Restarting");
+		startPOSIT();
 	}
 
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		if (!checkPhoneRegistrationAndInitialSync()) {
-			Intent i = new Intent(this, RegisterActivity.class);
-			startActivityForResult(i, REGISTRATION_ACTIVITY);
-		} else {
-			setContentView(R.layout.main);
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.i(TAG,"Stopping");
+	}
 
-			final ImageButton addFindButton = (ImageButton) findViewById(R.id.addFindButton);
-			if (addFindButton != null)
-				addFindButton.setOnClickListener(this);
-
-			final ImageButton listFindButton = (ImageButton) findViewById(R.id.listFindButton);
-			if (listFindButton != null) {
-				// Log.i(TAG, listFindButton.getText() + "");
-				listFindButton.setOnClickListener(this);
-			}
-		}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG,"Destroying");
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i(TAG,"onActivityResult Result from registration = " + resultCode);
 		switch (requestCode) {
-		case LOGIN_ACTIVITY:
-			if (resultCode == LOGIN_CANCELED)
-				finish();
-			else if (resultCode == LOGIN_SUCCESSFUL) {
-				Intent intent = new Intent(this, ShowProjectsActivity.class);
-				startActivity(intent);
-			}
-			break;
-		case REGISTRATION_CANCELLED:
-			finish();
-			break;
+		//		case LOGIN_ACTIVITY:
+		//			if (resultCode == LOGIN_CANCELED)
+		//				finish();
+		//			else if (resultCode == LOGIN_SUCCESSFUL) {
+		//				Intent intent = new Intent(this, ShowProjectsActivity.class);
+		//				startActivity(intent);
+		//			}
+		//			break;
+		//		case REGISTRATION_CANCELLED:
+		//			finish();
+		//			break;
 		case REGISTRATION_ACTIVITY:
-			if (resultCode == RegisterActivity.BACK_BUTTON)
+			//			if (resultCode == RegisterActivity.CANCELLED)
+			if (resultCode == LOGIN_CANCELED) {
+				Log.i(TAG,"Login canceled");
 				finish();
+			}
 		default:
 			super.onActivityResult(requestCode, resultCode, data);
 		}
@@ -226,7 +206,7 @@ public class PositMain extends Activity implements OnClickListener,
 	public void onClick(View view) {
 		// Make sure the user has chosen a project before trying to add finds
 		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
+		.getDefaultSharedPreferences(this);
 		if (sp.getString("PROJECT_NAME", "").equals("")) {
 			Utils.showToast(this, "To get started, you must choose a project.");
 			Intent i = new Intent(this, ShowProjectsActivity.class);
@@ -244,10 +224,7 @@ public class PositMain extends Activity implements OnClickListener,
 				intent.setClass(this, ListFindsActivity.class);
 				startActivity(intent);
 				break;
-			// case R.id.sahanaSMS:
-			// intent.setClass(this, SahanaSMSActivity.class);
-			// startActivity(intent);
-			// break;
+
 			}
 		}
 	}
@@ -272,18 +249,12 @@ public class PositMain extends Activity implements OnClickListener,
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		/*
-		 * TODO should be more like
-		 * "is RWG running and is RWG enabled in the settings" /* if
-		 * (RWGService.isRunning()) {
-		 * menu.findItem(R.id.rwg_start).setEnabled(false);
-		 * menu.findItem(R.id.rwg_end).setEnabled(true); } else {
-		 * menu.findItem(R.id.rwg_start).setEnabled(true);
-		 * menu.findItem(R.id.rwg_end).setEnabled(false); }
-		 */
-
+		//		if (RWGService.isRunning()) {
+		//			menu.findItem(R.id.rwg_start).setEnabled(false);
+		//			menu.findItem(R.id.rwg_end).setEnabled(true); } 
+		//		else {
+		//			menu.findItem(R.id.rwg_start).setEnabled(true);
+		//			menu.findItem(R.id.rwg_end).setEnabled(false); }
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -312,7 +283,7 @@ public class PositMain extends Activity implements OnClickListener,
 			break;
 		case R.id.rwg_start:
 			wifiManager = (WifiManager) this
-					.getSystemService(Context.WIFI_SERVICE);
+			.getSystemService(Context.WIFI_SERVICE);
 			// mAdhocClient = new AdhocClient(this);
 			rwg = new Intent(this, RWGService.class);
 			// rwgService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -335,18 +306,7 @@ public class PositMain extends Activity implements OnClickListener,
 		}
 		return true;
 	}
-
-	/**
-	 * Returns True if the phone has an authentication key and False if it does
-	 * not
-	 */
-	private boolean checkPhoneRegistrationAndInitialSync() {
-		String AUTH_KEY = sp.getString("AUTHKEY", "");
-		if (AUTH_KEY.equals("") || AUTH_KEY.equals(null)) {
-			return false;
-		} else
-			return true;
-	}
+	
 
 	/**
 	 * Intercepts the back key (KEYCODE_BACK) and displays a confirmation dialog
@@ -354,19 +314,14 @@ public class PositMain extends Activity implements OnClickListener,
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// REMOVED: To allow navigating back to Tracker
-		// if(keyCode==KeyEvent.KEYCODE_BACK){
-		// showDialog(confirm_exit);
-		// return true;
-		// }
-		// Log.i("code", keyCode+"");
+		if(keyCode==KeyEvent.KEYCODE_BACK){
+			showDialog(CONFIRM_EXIT);
+			return true;
+		}
+		Log.i("code", keyCode+"");
 		return super.onKeyDown(keyCode, event);
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
 
 	/**
 	 * Creates a dialog to confirm that the user wants to exit POSIT.
@@ -379,18 +334,18 @@ public class PositMain extends Activity implements OnClickListener,
 					R.drawable.alert_dialog_icon).setTitle(R.string.exit)
 					.setPositiveButton(R.string.alert_dialog_ok,
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									// User clicked OK so do some stuff
-									finish();
-								}
-							}).setNegativeButton(R.string.alert_dialog_cancel,
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// User clicked OK so do some stuff
+							finish();
+						}
+					}).setNegativeButton(R.string.alert_dialog_cancel,
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									/* User clicked Cancel so do nothing */
-								}
-							}).create();
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							/* User clicked Cancel so do nothing */
+						}
+					}).create();
 
 		default:
 			return null;
@@ -418,12 +373,5 @@ public class PositMain extends Activity implements OnClickListener,
 			mNotificationManager.cancel(Utils.ADHOC_ON_ID);
 		}
 		super.finish();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// Intent svc = new Intent(this, SyncService.class);
-		// stopService(svc);
 	}
 }
