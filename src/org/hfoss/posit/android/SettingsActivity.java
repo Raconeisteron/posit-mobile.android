@@ -86,7 +86,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		Log.i(TAG, "Email = " );
+		Log.i(TAG, "onPreferenceClick " );
 
 		if(preference.getTitle().toString().equals("Register this device")){
 			//Intent i = new Intent(this, RegisterPhoneActivity.class);
@@ -121,6 +121,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	}
 	
 	 public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+		 Log.i(TAG, "onSharedPreferenceChanged");
+
 		 if (key.equals("SERVER_ADDRESS")){
 			server = sp.getString("SERVER_ADDRESS", "");
 			if (server != null) {
