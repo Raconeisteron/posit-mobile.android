@@ -221,7 +221,7 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 		//
 		Button scanButton = (Button)findViewById(R.id.idBarcodeButton);
 		scanButton.setOnClickListener(this);
-		
+			
 		// scan button has been removed from the visibility for now and IDs are now randomly assigned by a UUID
 		scanButton.setVisibility(TextView.GONE);
 		TextView barcodeError = (TextView)findViewById(R.id.barcodeReaderError);
@@ -1065,6 +1065,8 @@ implements OnClickListener, OnItemClickListener, LocationListener {
 			mLatitude = location.getLatitude();
 			mLatitudeTextView.setText(mLatitude+"");
 			mLongitudeTextView.setText(mLongitude+"");
+			Log.i(TAG, "Longitude = " + mLongitude + " text " + mLongitudeTextView.getText().toString());
+
 			Message msg = Message.obtain();
 			msg.what = UPDATE_LOCATION;
 			this.updateHandler.sendMessage(msg);

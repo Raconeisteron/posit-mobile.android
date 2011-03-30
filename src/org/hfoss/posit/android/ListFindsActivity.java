@@ -334,13 +334,13 @@ public class ListFindsActivity extends ListActivity implements ViewBinder{
 			tv = (TextView) view;
 //			String lat = map.get(PositDbHelper.FINDS_LATITUDE);
 			String lat = cursor.getString(cursor.getColumnIndexOrThrow(PositDbHelper.FINDS_LATITUDE));
-			tv.setText("Location: "+lat);
+			tv.setText("Loc: "+lat.substring(0,Math.min(13, lat.length())) + "...");
 			return true;
 		case R.id.longitude_id:
 			tv = (TextView) view;
 //			String lon = map.get(PositDbHelper.FINDS_LONGITUDE);
 			String lon = cursor.getString(cursor.getColumnIndexOrThrow(PositDbHelper.FINDS_LONGITUDE));
-			tv.setText(", "+lon);
+			tv.setText(", "+lon.substring(0,Math.min(13, lon.length())) + "...");
 			return true;
 		case R.id.status:
 			tv = (TextView) view;
@@ -357,7 +357,7 @@ public class ListFindsActivity extends ListActivity implements ViewBinder{
 		case R.id.idNumberText:
 			tv = (TextView) view;
 			String iD = cursor.getString(cursor.getColumnIndexOrThrow(PositDbHelper.FINDS_GUID));
-			tv.setText(iD.substring(0,8) + " ...");
+			tv.setText(iD.substring(0,5) + " ...");
 			return true;
 		default:
 			return false;

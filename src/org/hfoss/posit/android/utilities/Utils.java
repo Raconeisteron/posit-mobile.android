@@ -84,7 +84,7 @@ public class Utils {
 	public static final int ADHOC_ON_ID = 123;
 	public static final int NOTIFICATION_ID = 1234;
 	
-	public static boolean debug = false;
+	public static boolean debug = true;
 	
 
 	

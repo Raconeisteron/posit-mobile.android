@@ -37,9 +37,14 @@
 								android:id="@+id/latitudeText" 
 								android:layout_width="wrap_content" 
 								android:layout_height="fill_parent" 
-								android:maxLength="10" 
 								android:maxLines="1" />
 						</LinearLayout>
+						
+					</TableRow>
+
+					<TableRow 
+						android:layout_width="fill_parent" 
+						android:layout_height="24sp">
 						
 						<LinearLayout 
 							android:layout_width="fill_parent" 
@@ -55,10 +60,11 @@
 								android:id="@+id/longitudeText" 
 								android:layout_width="wrap_content" 
 								android:layout_height="fill_parent" 
-								android:maxLength="10" 
 								android:maxLines="1" />
 						</LinearLayout>
 					</TableRow>
+
+
 					
 					<TableRow 
 						android:layout_width="fill_parent" 
@@ -162,6 +168,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 
 				android:orientation="vertical">
+				
 
 				<ImageButton 
 					android:id="@+id/idSaveButton" 
