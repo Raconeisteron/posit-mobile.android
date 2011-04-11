@@ -40,12 +40,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -84,6 +88,8 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	private Button mRegisterUsingBarcodeButton;
 	private Button mRegisterUsingDeviceButton;
 	private Button mRegisterButton;
+	
+	private String mAction; // Save current action for restartability
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -343,8 +349,8 @@ public class RegisterActivity extends Activity implements OnClickListener{
 						spEditor.putString("SERVER_ADDRESS", server);
 						spEditor.putString("AUTHKEY", authKey);
 						spEditor.putInt("PROJECT_ID", 0);
-						spEditor.putString("EMAIL", email);      // Should be in barcode?
-						spEditor.putString("PASSWORD", password);
+//						spEditor.putString("EMAIL", email);      // Should be in barcode?
+//						spEditor.putString("PASSWORD", password);
 						spEditor.putString("PROJECT_NAME", "");
 						spEditor.commit();
 
@@ -369,7 +375,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 				if (Utils.debug)
 					Log.e(TAG, e.toString());
 			}
-			break
+			break;
 		}
 	}
 	
@@ -490,7 +496,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 				finish();
 			}
 		}else {
-			Utils.showToast(this, message[1]) +
+			Utils.showToast(this, message[1] +
 					"\nMake sure you have connectivity" +
 					" and a working server.");
 			mProgressDialog.dismiss();
