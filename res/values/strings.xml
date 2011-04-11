@@ -183,6 +183,7 @@
 	<string name="date_time_label">Date and Time</string>
 	<string name="settings">Settings</string>
 	<string name="barcodeText">Read Barcode</string>
+	<string name="registerServerLabel">Server: (Can be changed in Settings)</string>
 
 
 	<!-- Related to Configuration -->
